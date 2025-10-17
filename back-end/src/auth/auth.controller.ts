@@ -4,6 +4,8 @@ import { LocalAuthGuard } from '../common/guard/local-auth.guard';
 import { Request, Response } from 'express';
 import { LogInDto } from './dto/logIn.dto';
 import { SignUpDto } from './dto/singUp.dto';
+import { JwtAuthGuard } from 'src/common/guard/jwt-auth.guard';
+import { AuthenticatedRequest } from 'src/common/types/authenticatedRequest.types';
 
 @Controller('auth')
 export class AuthController {
@@ -37,6 +39,35 @@ export class AuthController {
 
     return { message: 'SignUp success' };
   }
+
+  @UseGuards(JwtAuthGuard)
+  @Post('/logout')
+  async logout(@Req() req: Request, @Res({ passthrough: true }) res: Response) {
+    await this.authservice.logout(req);
+    res.clearCookie('accessToken');
+    res.clearCookie('refreshToken');
+
+    return { message: 'Logout success' };
+  }
+
+  @Post('refresh')
+  async refreshTokens(
+    @Req() req: AuthenticatedRequest,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    const { accessToken } = await this.authservice.refreshTokens(req);
+
+    //set dei cookie
+    res.cookie('accessToken', accessToken, {
+      httpOnly: true,
+      secure: true,
+      sameSite: 'strict',
+      maxAge: 1000 * 60 * 15,
+    });
+
+    return { message: 'Token refreshed!' };
+  }
+
   private setAuthCookies(
     res: Response,
     accessToken: string,

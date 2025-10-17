@@ -14,6 +14,7 @@ import { Session } from './session.entity';
 import { Repository } from 'typeorm';
 import { Request } from 'express';
 import { SignUpDto } from './dto/singUp.dto';
+import { AuthenticatedRequest } from 'src/common/types/authenticatedRequest.types';
 
 @Injectable()
 export class AuthService {
@@ -90,6 +91,73 @@ export class AuthService {
     return {
       accessToken,
       refreshToken,
+    };
+  }
+
+  async logout(req: Request) {
+    const user = req.user as User;
+    const deviceInfo = req.headers['user-agent'] ?? 'unknown';
+
+    const sessions = await this.sessionRepository.find({
+      where: {
+        user: { id: user.id },
+        deviceInfo,
+      },
+      relations: ['user'],
+    });
+
+    await this.sessionRepository.remove(sessions); // elimina tutti
+  }
+
+  async refreshTokens(
+    req: AuthenticatedRequest,
+  ): Promise<{ accessToken: string }> {
+    //controllo e valido il refreshToken
+    const oldRefreshToken = req.cookies.refreshToken;
+    if (!oldRefreshToken) {
+      throw new UnauthorizedException('Missing refresh token');
+    }
+    //Estrae userid dal payload (utile perche non usando la guardia i campi di req non vengono implemtnati)
+    let payload: JwtPayload;
+    try {
+      payload = this.jwtService.verify(oldRefreshToken);
+    } catch {
+      throw new UnauthorizedException('Invalid refresh Token');
+    }
+    const userId = payload.userId;
+
+    //Trova tutte la sessione per quello specifico dispositivo
+    const session = await this.sessionRepository.findOne({
+      where: {
+        user: { id: userId },
+        deviceInfo: req.headers['user-agent'] || 'unknown',
+      },
+      relations: ['user'],
+    });
+    if (!session) throw new UnauthorizedException('Invalid session');
+
+    const isValid = await bcrypt.compare(
+      oldRefreshToken,
+      session.refreshTokenHash,
+    );
+    if (!isValid) {
+      throw new UnauthorizedException('Invalid refresh token');
+    }
+    if (session.expiresAt < new Date()) {
+      throw new UnauthorizedException('Refresh token expired');
+    }
+    //salvo il nuovo token nella sessione
+    const newPayload: JwtPayload = {
+      userId: session.user.id,
+      role: session.user.role,
+    };
+    //creo il token
+    const accessToken = this.jwtService.sign(newPayload);
+
+    await this.sessionRepository.save(session);
+
+    return {
+      accessToken,
     };
   }
 
