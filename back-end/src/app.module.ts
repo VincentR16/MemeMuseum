@@ -3,6 +3,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { configValifationSchema } from './config.schema';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ThrottlerModule } from '@nestjs/throttler';
+import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [
@@ -33,6 +34,7 @@ import { ThrottlerModule } from '@nestjs/throttler';
         },
       ],
     }),
+    UsersModule,
   ],
   controllers: [],
   providers: [],
