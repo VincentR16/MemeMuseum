@@ -7,7 +7,7 @@ import {
   IsNotEmpty,
   IsString,
 } from 'class-validator';
-import { UserRoles } from 'src/common/types/users.Roles';
+import { UserRoles } from 'src/common/types/usersRoles.types';
 
 export class UpdateProfileDto {
   @IsNotEmpty()

@@ -1,6 +1,6 @@
 import { Exclude } from 'class-transformer';
 import { Session } from 'src/auth/session.entity';
-import { UserRoles } from 'src/common/types/users.Roles';
+import { UserRoles } from 'src/common/types/usersRoles.types';
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()

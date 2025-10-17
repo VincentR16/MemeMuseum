@@ -9,10 +9,11 @@ import { UsersService } from 'src/users/users.service';
 import * as bcrypt from 'bcryptjs';
 import dayjs from 'dayjs';
 import { JwtService } from '@nestjs/jwt';
-import { JwtPayload } from 'src/common/types/jwtPayload';
+import { JwtPayload } from 'src/common/types/jwtPayload.types';
 import { Session } from './session.entity';
 import { Repository } from 'typeorm';
 import { Request } from 'express';
+import { SignUpDto } from './dto/singUp.dto';
 
 @Injectable()
 export class AuthService {
@@ -33,6 +34,32 @@ export class AuthService {
       throw new UnauthorizedException('Invalid credentials');
 
     return user;
+  }
+
+  async signUp(
+    dto: SignUpDto,
+    req: Request,
+  ): Promise<{ accessToken: string; refreshToken: string }> {
+    const user = await this.userService.createUser(dto);
+
+    const { refreshTokenHash, accessToken, refreshToken } =
+      await this.createTokens(user);
+
+    // Salva sessione nel DB
+    const session = this.sessionRepository.create({
+      refreshTokenHash: refreshTokenHash,
+      deviceInfo: req.headers['user-agent'] || 'unknown',
+      ipAddress: req.ip,
+      expiresAt: dayjs().add(7, 'days').toDate(),
+      user: user,
+    });
+
+    await this.sessionRepository.save(session);
+
+    return {
+      accessToken,
+      refreshToken,
+    };
   }
 
   async login(

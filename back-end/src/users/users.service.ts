@@ -5,7 +5,7 @@ import { Repository } from 'typeorm';
 import { UpdateProfileDto } from './dto/updateUsers.dto';
 import { SignUpDto } from 'src/auth/dto/singUp.dto';
 import * as bcrypt from 'bcryptjs';
-import { UserRoles } from 'src/common/types/users.Roles';
+import { UserRoles } from 'src/common/types/usersRoles.types';
 
 @Injectable()
 export class UsersService {
