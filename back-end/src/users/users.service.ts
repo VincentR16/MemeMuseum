@@ -2,7 +2,7 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './users.entity';
 import { Repository } from 'typeorm';
-import { UpdateProfileDto } from './dto/updateUsers.dto';
+import { UpdateUserDto } from './dto/updateUsers.dto';
 import { SignUpDto } from 'src/auth/dto/singUp.dto';
 import * as bcrypt from 'bcryptjs';
 import { UserRoles } from 'src/common/types/usersRoles.types';
@@ -47,7 +47,7 @@ export class UsersService {
     return result;
   }
 
-  async updateUser(userId: string, dto: UpdateProfileDto) {
+  async updateUser(userId: string, dto: UpdateUserDto) {
     const user = await this.usersRepository.findOne({
       where: { id: userId },
     });
@@ -57,7 +57,7 @@ export class UsersService {
     }
 
     Object.assign(user, dto);
-    return await this.usersRepository.save(user);
+    await this.usersRepository.save(user);
   }
 
   async deleteUser(userId: string) {

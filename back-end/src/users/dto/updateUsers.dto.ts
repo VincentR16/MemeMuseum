@@ -9,7 +9,7 @@ import {
 } from 'class-validator';
 import { UserRoles } from 'src/common/types/usersRoles.types';
 
-export class UpdateProfileDto {
+export class UpdateUserDto {
   @IsNotEmpty()
   @IsString()
   name: string;
