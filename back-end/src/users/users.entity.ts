@@ -1,9 +1,11 @@
 import { Exclude } from 'class-transformer';
 import { Session } from 'src/auth/session.entity';
+import { Comment } from 'src/comments/comments.entity';
 import { UserRoles } from 'src/common/types/usersRoles.types';
+import { Meme } from 'src/memes/memes.entity';
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
-@Entity()
+@Entity('users')
 export class User {
   @Exclude()
   @PrimaryGeneratedColumn('uuid')
@@ -27,18 +29,23 @@ export class User {
   @Column({})
   gender: string;
 
-  @Column({ type: 'enum', enum: UserRoles })
+  @Column({ type: 'enum', enum: UserRoles, default: UserRoles.USER })
   role: UserRoles;
 
-  @Column()
   @Exclude()
+  @Column()
   password: string;
 
   @Exclude()
   @OneToMany(() => Session, (session) => session.user, {
-    nullable: true,
     onDelete: 'CASCADE',
-    eager: true,
+    eager: false,
   })
   session: Session[];
+
+  @OneToMany(() => Meme, (meme) => meme.user, {})
+  memes: Meme[];
+
+  @OneToMany(() => Comment, (comment) => comment.user, {})
+  comments: Comment[];
 }
