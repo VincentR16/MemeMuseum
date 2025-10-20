@@ -7,7 +7,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/users/users.entity';
 import { UsersService } from 'src/users/users.service';
 import * as bcrypt from 'bcryptjs';
-import dayjs from 'dayjs';
+import * as dayjs from 'dayjs';
 import { JwtService } from '@nestjs/jwt';
 import { JwtPayload } from 'src/common/types/jwtPayload.types';
 import { Session } from './session.entity';

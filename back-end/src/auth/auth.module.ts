@@ -4,20 +4,20 @@ import { AuthService } from './auth.service';
 import { LocalStrategy } from './local.strategy';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { PassportModule } from '@nestjs/passport';
-import { JwtModule, JwtService } from '@nestjs/jwt';
+import { JwtModule } from '@nestjs/jwt';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { JwtStrategy } from './jwt/jwt.strategy';
-import { UsersService } from 'src/users/users.service';
-import { User } from 'src/users/users.entity';
 import { Session } from './session.entity';
+import { AuthController } from './auth.controller';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Session, User]),
+    TypeOrmModule.forFeature([Session]),
     UsersModule,
     ConfigModule.forRoot(),
     PassportModule,
     JwtModule.registerAsync({
+      imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: (config: ConfigService) => ({
         secret: config.get('JWT_SECRET'),
@@ -25,13 +25,8 @@ import { Session } from './session.entity';
       }),
     }),
   ],
-  providers: [
-    AuthService,
-    UsersService,
-    LocalStrategy,
-    JwtStrategy,
-    JwtService,
-  ],
-  exports: [AuthModule],
+  providers: [AuthService, LocalStrategy, JwtStrategy],
+  exports: [AuthService],
+  controllers: [AuthController],
 })
 export class AuthModule {}

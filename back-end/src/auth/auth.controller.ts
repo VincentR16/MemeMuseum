@@ -24,7 +24,7 @@ export class AuthController {
     return { message: 'Login success' };
   }
 
-  @Post('/signup')
+  @Post('signup')
   async signUp(
     @Req() req: Request,
     @Body() dto: SignUpDto,
@@ -41,7 +41,7 @@ export class AuthController {
   }
 
   @UseGuards(JwtAuthGuard)
-  @Post('/logout')
+  @Post('logout')
   async logout(@Req() req: Request, @Res({ passthrough: true }) res: Response) {
     await this.authservice.logout(req);
     res.clearCookie('accessToken');

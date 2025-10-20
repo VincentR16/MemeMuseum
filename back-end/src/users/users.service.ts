@@ -69,6 +69,7 @@ export class UsersService {
     }
     return await this.usersRepository.delete({ id: userId });
   }
+
   async findByEmailOrUsername(emailOrUsername: string): Promise<User | null> {
     return await this.usersRepository.findOne({
       where: [{ email: emailOrUsername }, { username: emailOrUsername }],
