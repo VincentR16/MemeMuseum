@@ -1,5 +1,6 @@
-import { Comment } from 'src/comments/comments.entity';
-import { User } from 'src/users/users.entity';
+import { Comment } from 'src/comments/comment.entity';
+import { User } from 'src/users/user.entity';
+import { Vote } from 'src/votes/vote.entity';
 import {
   Entity,
   PrimaryGeneratedColumn,
@@ -19,22 +20,26 @@ export class Meme {
   title: string;
 
   @Column({ type: 'text', nullable: true })
-  description: string;
+  description?: string;
 
   @Column()
-  imageUrl: string;
+  cloudinaryImageUrl: string;
 
   @Column()
   cloudinaryPublicId: string;
 
-  @Column({ default: 0 })
-  votes: number;
+  @OneToMany(() => Vote, (vote) => vote.meme)
+  votes: Vote[];
 
   @Column({ default: 0 })
-  views: number;
+  votesCount: number;
 
-  @CreateDateColumn()
+  @CreateDateColumn({
+    type: 'timestamp',
+    precision: 0,
+  })
   createdAt: Date;
+
   @ManyToOne(() => User, (user) => user.memes, {
     nullable: false,
     onDelete: 'CASCADE',

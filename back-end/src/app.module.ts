@@ -6,6 +6,10 @@ import { ThrottlerModule } from '@nestjs/throttler';
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import { LoggerMiddleware } from './common/middleware/logger.middleware';
+import { MemeModule } from './memes/memes.module';
+import { CloudinaryModule } from './cloudinary/cloudinary.module';
+import { CommentsModule } from './comments/comments.module';
+import { VoteModule } from './votes/votes.module';
 
 @Module({
   imports: [
@@ -36,8 +40,12 @@ import { LoggerMiddleware } from './common/middleware/logger.middleware';
         },
       ],
     }),
+    CloudinaryModule,
     AuthModule,
     UsersModule,
+    MemeModule,
+    VoteModule,
+    CommentsModule,
   ],
   controllers: [],
   providers: [],

@@ -1,5 +1,5 @@
-import { Meme } from 'src/memes/memes.entity';
-import { User } from 'src/users/users.entity';
+import { Meme } from 'src/memes/meme.entity';
+import { User } from 'src/users/user.entity';
 import {
   Entity,
   PrimaryGeneratedColumn,
@@ -30,11 +30,11 @@ export class Comment {
     nullable: false,
     onDelete: 'CASCADE',
   })
-  @JoinColumn({ name: 'userId' })
+  @JoinColumn({ name: 'username' })
   user: User;
 
   @Column()
-  userId: string;
+  username: string;
 
   @Column({ default: 0 })
   likes: number;

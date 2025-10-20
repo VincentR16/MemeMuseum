@@ -7,8 +7,11 @@ export class CloudinaryService {
   async uploadImageToCloudinary(
     file: Express.Multer.File,
   ): Promise<UploadApiResponse> {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-    const fileBuffer: Buffer = file.buffer as Buffer;
+    if (!file.buffer || file.buffer.length === 0) {
+      throw new BadRequestException('File buffer is empty');
+    }
+
+    const fileBuffer: Buffer = file.buffer;
 
     return new Promise<UploadApiResponse>((resolve, reject) => {
       const uploadStream = v2.uploader.upload_stream(
@@ -43,7 +46,6 @@ export class CloudinaryService {
     }
   }
 
-  // Metodo per ottenere URL con trasformazioni
   getOptimizedUrl(publicId: string, width?: number, height?: number): string {
     return v2.url(publicId, {
       width: width || 500,

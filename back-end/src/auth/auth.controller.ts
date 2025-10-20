@@ -65,7 +65,7 @@ export class AuthController {
       maxAge: 1000 * 60 * 15,
     });
 
-    return { message: 'Token refreshed!' };
+    return { message: 'Access token refreshed!' };
   }
 
   private setAuthCookies(
