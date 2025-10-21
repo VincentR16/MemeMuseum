@@ -1,4 +1,5 @@
 import { Comment } from 'src/comments/comment.entity';
+import { Tag } from 'src/tags/tag.entity';
 import { User } from 'src/users/user.entity';
 import { Vote } from 'src/votes/vote.entity';
 import {
@@ -9,6 +10,7 @@ import {
   ManyToOne,
   OneToMany,
   JoinColumn,
+  ManyToMany,
 } from 'typeorm';
 
 @Entity('memes')
@@ -53,4 +55,7 @@ export class Meme {
 
   @OneToMany(() => Comment, (comment) => comment.meme, { cascade: true })
   comments: Comment[];
+
+  @ManyToMany(() => Tag, (tag) => tag.memes, { nullable: true })
+  tags: Tag[];
 }

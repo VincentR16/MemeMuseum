@@ -10,6 +10,7 @@ import { MemeModule } from './memes/memes.module';
 import { CloudinaryModule } from './cloudinary/cloudinary.module';
 import { CommentsModule } from './comments/comments.module';
 import { VoteModule } from './votes/votes.module';
+import { TagModule } from './tags/tags.module';
 
 @Module({
   imports: [
@@ -46,6 +47,7 @@ import { VoteModule } from './votes/votes.module';
     MemeModule,
     VoteModule,
     CommentsModule,
+    TagModule,
   ],
   controllers: [],
   providers: [],
