@@ -8,6 +8,7 @@ import {
 } from 'typeorm';
 import { User } from 'src/users/user.entity';
 import { Meme } from 'src/memes/meme.entity';
+import { VoteType } from 'src/common/types/votes.types';
 
 @Entity('votes')
 @Unique(['user', 'meme'])
@@ -35,9 +36,10 @@ export class Vote {
 
   @Column({
     type: 'enum',
-    enum: ['upvote', 'downvote'],
+    enum: VoteType,
+    default: VoteType.NOVOTE,
   })
-  voteType: 'upvote' | 'downvote';
+  voteType: VoteType;
 
   @CreateDateColumn()
   createdAt: Date;

@@ -23,12 +23,15 @@ import { ThrottlerGuard } from '@nestjs/throttler';
 import { UpdateMemeDto } from './dto/updateMeme.dto';
 import { CommentService } from 'src/comments/comments.service';
 import { CommentDto } from 'src/comments/dto/comment.dto';
+import { VoteService } from 'src/votes/votes.service';
+import { VoteType } from 'src/common/types/votes.types';
 
 @Controller('memes')
 export class MemesController {
   constructor(
     private readonly memeService: MemeService,
     private readonly commentService: CommentService,
+    private readonly voteService: VoteService,
   ) {}
 
   @Post()
@@ -83,5 +86,25 @@ export class MemesController {
   @Get(':id')
   getAllComment(@Param('id') memeId: string) {
     return this.commentService.getAll(memeId);
+  }
+
+  @Post(':id/upvote')
+  async upvoteMeme(@Param('id') memeId: string, @UserId() userId: string) {
+    return await this.voteService.voteMeme(memeId, userId, VoteType.VOTEUP);
+  }
+
+  @Post(':id/downvote')
+  async downvoteMeme(@Param('id') memeId: string, @UserId() userId: string) {
+    return await this.voteService.voteMeme(memeId, userId, VoteType.VOTEDOWN);
+  }
+
+  @Post(':id/remove-vote')
+  async removeVoteMeme(@Param('id') memeId: string, @UserId() userId: string) {
+    return await this.voteService.voteMeme(memeId, userId, VoteType.NOVOTE);
+  }
+
+  @Get(':id/my-vote')
+  async getMyVote(@Param('id') memeId: string, @UserId() userId: string) {
+    return await this.voteService.getUserVote(memeId, userId);
   }
 }
