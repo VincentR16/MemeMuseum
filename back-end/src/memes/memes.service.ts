@@ -120,6 +120,8 @@ export class MemeService {
     };
   }
   //! da continuare!! vedere il caso in cui non ci siano meme of the day
+  //todo: ricorda questo passaggio
+
   async get(id: string): Promise<Meme> {
     const result = await this.memeRepository.findOne({
       where: { id },
