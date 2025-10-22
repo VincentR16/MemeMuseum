@@ -74,6 +74,6 @@ export class TagService {
     const tag = await this.get(name);
 
     if (tag.count !== 0) throw new BadRequestException('Tag count is not 0');
-    await this.tagRepository.delete(tag);
+    await this.tagRepository.remove(tag);
   }
 }

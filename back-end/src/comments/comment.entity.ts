@@ -30,14 +30,11 @@ export class Comment {
     nullable: false,
     onDelete: 'CASCADE',
   })
-  @JoinColumn({ name: 'username' })
+  @JoinColumn({ name: 'userId' })
   user: User;
 
   @Column()
-  username: string;
-
-  @Column({ default: 0 })
-  likes: number;
+  userId: string;
 
   @CreateDateColumn()
   createdAt: Date;

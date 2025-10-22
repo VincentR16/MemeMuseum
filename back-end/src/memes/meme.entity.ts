@@ -11,6 +11,7 @@ import {
   OneToMany,
   JoinColumn,
   ManyToMany,
+  JoinTable,
 } from 'typeorm';
 
 @Entity('memes')
@@ -56,6 +57,11 @@ export class Meme {
   @OneToMany(() => Comment, (comment) => comment.meme, { cascade: true })
   comments: Comment[];
 
-  @ManyToMany(() => Tag, (tag) => tag.memes, { nullable: true })
+  @ManyToMany(() => Tag, (tag) => tag.memes)
+  @JoinTable({
+    name: 'meme_tags', // nome della tabella di join
+    joinColumn: { name: 'memeId', referencedColumnName: 'id' },
+    inverseJoinColumn: { name: 'tagId', referencedColumnName: 'id' },
+  })
   tags: Tag[];
 }

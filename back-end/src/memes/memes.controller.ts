@@ -21,10 +21,15 @@ import { ImageFileValidationPipe } from 'src/common/pipe/image-file-validation-p
 import { PaginatedMemeResponseDto } from './dto/paginatedMemeResponse.dto';
 import { ThrottlerGuard } from '@nestjs/throttler';
 import { UpdateMemeDto } from './dto/updateMeme.dto';
+import { CommentService } from 'src/comments/comments.service';
+import { CommentDto } from 'src/comments/dto/comment.dto';
 
 @Controller('memes')
 export class MemesController {
-  constructor(private readonly memeService: MemeService) {}
+  constructor(
+    private readonly memeService: MemeService,
+    private readonly commentService: CommentService,
+  ) {}
 
   @Post()
   @UseGuards(JwtAuthGuard)
@@ -64,5 +69,19 @@ export class MemesController {
     @Body() dto: UpdateMemeDto,
   ): Promise<Meme> {
     return this.memeService.update(id, userId, dto);
+  }
+
+  @Post(':id')
+  createComment(
+    @UserId() userId: string,
+    @Param('id') memeId: string,
+    @Body() dto: CommentDto,
+  ) {
+    return this.commentService.create(memeId, userId, dto);
+  }
+
+  @Get(':id')
+  getAllComment(@Param('id') memeId: string) {
+    return this.commentService.getAll(memeId);
   }
 }
