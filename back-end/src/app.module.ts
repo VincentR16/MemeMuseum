@@ -11,6 +11,7 @@ import { CloudinaryModule } from './cloudinary/cloudinary.module';
 import { CommentsModule } from './comments/comments.module';
 import { VoteModule } from './votes/votes.module';
 import { TagModule } from './tags/tags.module';
+import { TrendingModule } from './trendsApi/trends.module';
 
 @Module({
   imports: [
@@ -41,6 +42,7 @@ import { TagModule } from './tags/tags.module';
         },
       ],
     }),
+    TrendingModule,
     CloudinaryModule,
     AuthModule,
     UsersModule,

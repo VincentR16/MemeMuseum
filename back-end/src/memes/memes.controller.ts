@@ -45,6 +45,14 @@ export class MemesController {
     return this.memeService.create(file, userId, dto);
   }
 
+  @Get('memes-of-the-day')
+  @UseGuards(ThrottlerGuard)
+  getMemeOfTheDay(
+    @Query('page') page: number,
+  ): Promise<PaginatedMemeResponseDto> {
+    return this.memeService.getMemeOftheday(page);
+  }
+
   @Get('memes')
   @UseGuards(ThrottlerGuard)
   getMemes(@Query('page') page: number): Promise<PaginatedMemeResponseDto> {

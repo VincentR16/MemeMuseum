@@ -7,6 +7,7 @@ import { CloudinaryModule } from 'src/cloudinary/cloudinary.module';
 import { CommentService } from 'src/comments/comments.service';
 import { VoteService } from 'src/votes/votes.service';
 import { Vote } from 'src/votes/vote.entity';
+import { Comment } from 'src/comments/comment.entity';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Meme, Comment, Vote]), CloudinaryModule],
