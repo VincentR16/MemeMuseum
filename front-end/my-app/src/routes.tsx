@@ -1,5 +1,6 @@
 import RootLayout from "./pages/rootLayout.page";
 
+
 export const routes = [
   {
     path: "/",

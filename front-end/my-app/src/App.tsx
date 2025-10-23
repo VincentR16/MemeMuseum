@@ -16,8 +16,8 @@ const theme = createTheme({
       "#373A40",
       "#2C2E33",
       "#25262B",
-      "#191818", 
-      "#141517",
+      "#181818",
+      "#121212",
       "#101113",
     ],
   },
@@ -43,8 +43,3 @@ export default function App() {
   );
 }
 
-
-// #5A189A viola
-// #C77DFF viola chiaro
-// #191818 sfondo
-// e poi penso bianco

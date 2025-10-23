@@ -1,40 +1,39 @@
 import { AppShell, Burger, Group } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
+import { Navbar } from "../components/navbar";
 
 export default function RootLayout() {
   const [mobileOpened, { toggle: toggleMobile }] = useDisclosure();
-  const [desktopOpened, { toggle: toggleDesktop }] = useDisclosure(true);
 
   return (
     <AppShell
-      padding="md"
-      header={{ height: 60 }}
+      header={{  height: { base: 50, sm: 0 } }}
       navbar={{
         width: 300,
         breakpoint: "sm",
-        collapsed: { mobile: !mobileOpened, desktop: !desktopOpened },
+        collapsed: { mobile: !mobileOpened },
       }}
     >
-      <AppShell.Header>
+      <AppShell.Header hiddenFrom="sm">
         <Group h="100%" px="md">
           <Burger
+            color="violet"
             opened={mobileOpened}
             onClick={toggleMobile}
             hiddenFrom="sm"
             size="sm"
           />
-          <Burger
-            opened={desktopOpened}
-            onClick={toggleDesktop}
-            visibleFrom="sm"
-            size="sm"
-          />
         </Group>
       </AppShell.Header>
 
-      <AppShell.Navbar p="md">Navbar</AppShell.Navbar>
+      <AppShell.Navbar >
+        <Navbar></Navbar>
+      </AppShell.Navbar>
 
       <AppShell.Main>Main</AppShell.Main>
     </AppShell>
   );
 }
+
+
+// se necessario aggiungere la navbar che si richiude anche per il computer, ma non sembra il caso
