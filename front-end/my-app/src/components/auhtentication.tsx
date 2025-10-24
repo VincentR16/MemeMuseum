@@ -1,112 +1,116 @@
 import {
   Anchor,
   Button,
-  Divider,
   Group,
-  Paper,
-  type PaperProps,
   PasswordInput,
   Select,
   Stack,
   TextInput,
+  SimpleGrid,
 } from "@mantine/core";
 import { upperFirst, useToggle } from "@mantine/hooks";
 import { useLoginForm } from "../hook/form/useLoginForm";
 import { useRegisterForm } from "../hook/form/useRegisterForm";
 import { DatePickerInput } from "@mantine/dates";
 
-export function AuthenticationForm(props: PaperProps) {
-  const [type, toggle] = useToggle(["login", "register"]);
+export function AuthenticationForm() {
+  const [type, toggle] = useToggle(["Login", "Register"]);
   const loginForm = useLoginForm();
   const registerForm = useRegisterForm();
 
   return (
-    <Paper radius="md" p="lg" withBorder {...props}>
-      <Divider label="Or continue with email" labelPosition="center" my="lg" />
-
       <form
         onSubmit={
-          type === "login"
+          type === "Login"
             ? loginForm.onSubmit(() => {})
             : registerForm.onSubmit(() => {})
         }
       >
         <Stack>
-          {type === "register" && (
+          {type === "Register" && (
             <>
-              <TextInput
-                label="Name"
-                placeholder="Your name"
-                value={registerForm.values.name}
-                onChange={(event) =>
-                  registerForm.setFieldValue("name", event.currentTarget.value)
-                }
-                error={registerForm.errors.name}
-                radius="md"
-                withAsterisk
-              />
-              <TextInput
-                mt="md"
-                label="Surname"
-                placeholder="Your Surname"
-                value={registerForm.values.surname}
-                onChange={(event) =>
-                  registerForm.setFieldValue(
-                    "surname",
-                    event.currentTarget.value
-                  )
-                }
-                error={registerForm.errors.surname}
-                radius="md"
-                withAsterisk
-              />
-              <TextInput
-                label="username"
-                placeholder="Your username"
-                value={registerForm.values.username}
-                onChange={(event) =>
-                  registerForm.setFieldValue(
-                    "username",
-                    event.currentTarget.value
-                  )
-                }
-                error={registerForm.errors.username}
-                radius="md"
-                withAsterisk
-              />
-              <Select
-                mt="md"
-                comboboxProps={{ withinPortal: true }}
-                data={["Male", "Female", "Other"]}
-                placeholder="Pick one"
-                label="Gender"
-                withAsterisk
-                value={registerForm.values.gender}
-                onChange={(value) =>
-                  registerForm.setFieldValue("gender", value || "")
-                }
-                error={registerForm.errors.gender}
-              ></Select>
+              <SimpleGrid cols={2}>
+                <TextInput
+                  label="Name"
+                  placeholder="Your name"
+                  value={registerForm.values.name}
+                  onChange={(event) =>
+                    registerForm.setFieldValue(
+                      "name",
+                      event.currentTarget.value
+                    )
+                  }
+                  error={registerForm.errors.name}
+                  radius="md"
+                  withAsterisk
+                />
+                <TextInput
+                  label="Surname"
+                  placeholder="Your Surname"
+                  value={registerForm.values.surname}
+                  onChange={(event) =>
+                    registerForm.setFieldValue(
+                      "surname",
+                      event.currentTarget.value
+                    )
+                  }
+                  error={registerForm.errors.surname}
+                  radius="md"
+                  withAsterisk
+                />
+              </SimpleGrid>
 
-              <DatePickerInput
-                mt="md"
-                placeholder="Pick a date"
-                label="Date of Birth"
-                value={registerForm.values.birthDate}
-                onChange={(value) =>
-                  registerForm.setFieldValue("birthDate", value || "")
-                }
-                error={registerForm.errors.birthDate}
-                withAsterisk
-              />
+              <SimpleGrid cols={2}>
+                <TextInput
+                  label="Username"
+                  placeholder="Your username"
+                  value={registerForm.values.username}
+                  onChange={(event) =>
+                    registerForm.setFieldValue(
+                      "username",
+                      event.currentTarget.value
+                    )
+                  }
+                  error={registerForm.errors.username}
+                  radius="md"
+                  withAsterisk
+                />
+                <Select
+                  comboboxProps={{ withinPortal: true }}
+                  data={["Male", "Female", "Other"]}
+                  placeholder="Pick one"
+                  label="Gender"
+                  withAsterisk
+                  value={registerForm.values.gender}
+                  onChange={(value) =>
+                    registerForm.setFieldValue("gender", value || "")
+                  }
+                  error={registerForm.errors.gender}
+                  radius="md"
+                />
+              </SimpleGrid>
 
-              <TextInput
-                label="Location"
-                withAsterisk
-                value={registerForm.values.location}
-                error={registerForm.errors.location}
-                {...registerForm.getInputProps("location")}
-              />
+              <SimpleGrid cols={2}>
+                <DatePickerInput
+                  placeholder="Pick a date"
+                  label="Date of Birth"
+                  value={registerForm.values.birthDate}
+                  onChange={(value) =>
+                    registerForm.setFieldValue("birthDate", value || "")
+                  }
+                  error={registerForm.errors.birthDate}
+                  withAsterisk
+                  radius="md"
+                />
+                <TextInput
+                  label="Location"
+                  withAsterisk
+                  value={registerForm.values.location}
+                  error={registerForm.errors.location}
+                  {...registerForm.getInputProps("location")}
+                  radius="md"
+                />
+              </SimpleGrid>
             </>
           )}
 
@@ -115,12 +119,12 @@ export function AuthenticationForm(props: PaperProps) {
             label="Email"
             placeholder="hello@mantine.dev"
             value={
-              type === "login"
+              type === "Login"
                 ? loginForm.values.emailOrUsername
                 : registerForm.values.email
             }
             onChange={(event) => {
-              if (type == "login") {
+              if (type == "Login") {
                 loginForm.setFieldValue(
                   "emailOrUsername",
                   event.currentTarget.value
@@ -130,7 +134,7 @@ export function AuthenticationForm(props: PaperProps) {
               }
             }}
             error={
-              type === "login"
+              type === "Login"
                 ? loginForm.errors.email
                 : registerForm.errors.email
             }
@@ -142,21 +146,24 @@ export function AuthenticationForm(props: PaperProps) {
             label="Password"
             placeholder="Your password"
             value={
-              type === "login"
+              type === "Login"
                 ? loginForm.values.password
                 : registerForm.values.password
             }
             onChange={(event) => {
-              if (type == "login") {
-                loginForm.setFieldValue("email", event.currentTarget.value);
+              if (type == "Login") {
+                loginForm.setFieldValue("password", event.currentTarget.value);
               } else {
-                registerForm.setFieldValue("email", event.currentTarget.value);
+                registerForm.setFieldValue(
+                  "password",
+                  event.currentTarget.value
+                );
               }
             }}
             error={
-              type === "login"
-                ? loginForm.errors.email
-                : registerForm.errors.email
+              type === "Login"
+                ? loginForm.errors.password
+                : registerForm.errors.password
             }
             radius="md"
           />
@@ -168,17 +175,15 @@ export function AuthenticationForm(props: PaperProps) {
             type="button"
             c="dimmed"
             onClick={() => toggle()}
-            size="xs"
           >
-            {type === "register"
+            {type === "Register"
               ? "Already have an account? Login"
               : "Don't have an account? Register"}
           </Anchor>
-          <Button type="submit" radius="xl">
+          <Button type="submit" color="violet" radius="xl">
             {upperFirst(type)}
           </Button>
         </Group>
       </form>
-    </Paper>
   );
 }

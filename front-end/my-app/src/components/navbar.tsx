@@ -6,9 +6,10 @@ import {
   IconLogout,
   IconUserCircle,
 } from "@tabler/icons-react";
-import { Group, } from "@mantine/core";
+import { Group } from "@mantine/core";
 import { MantineLogo } from "@mantinex/mantine-logo";
 import classes from "./style/navbar.module.css";
+import { useModalContext } from "../context/modalContext";
 
 const data = [
   { link: "", label: "Archive", icon: IconHistory },
@@ -19,6 +20,7 @@ const data = [
 
 export function Navbar() {
   const [active, setActive] = useState("Archive");
+  const { openAuthModal } = useModalContext();
 
   const links = data.map((item) => (
     <a
@@ -52,6 +54,7 @@ export function Navbar() {
           onClick={(event) => {
             event.preventDefault();
             setActive("Logout");
+            openAuthModal();
           }}
         >
           <IconLogout className={classes.linkIcon} stroke={1.5} />
