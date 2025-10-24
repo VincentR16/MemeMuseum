@@ -1,9 +1,10 @@
-import { Modal, ThemeIcon } from "@mantine/core";
+import { Center, Modal, ThemeIcon } from "@mantine/core";
 import { useModalContext } from "../context/modalContext";
 import { CustomTitle } from "./customTitle";
 import { AuthenticationForm } from "./auhtentication";
 import { IconLogin, IconX } from "@tabler/icons-react";
 import { useMediaQuery } from "@mantine/hooks";
+import MemeMuseumLogo from "./memMuseumLogo";
 
 export default function AuthModal() {
   const { authOpened, closeAuthModal } = useModalContext();
@@ -18,8 +19,8 @@ export default function AuthModal() {
       }}
       title={
         <CustomTitle
-          title="Welcome to MemeMuseum"
-          icon={<IconLogin color="grey" size={24}></IconLogin>}
+          title="Welcome"
+          icon={<IconLogin size={24}></IconLogin>}
         ></CustomTitle>
       }
       centered
@@ -27,11 +28,15 @@ export default function AuthModal() {
       closeButtonProps={{
         icon: (
           <ThemeIcon color="red.9" variant="light">
-            <IconX size={20} ></IconX>
+            <IconX size={20}></IconX>
           </ThemeIcon>
         ),
       }}
       withinPortal={false}
+      transitionProps={{
+        transition: "slide-up",
+        duration: 300,
+      }}
       radius="md"
       styles={{
         body: {
@@ -45,6 +50,10 @@ export default function AuthModal() {
         },
       }}
     >
+      <Center mb="xl">
+        <MemeMuseumLogo></MemeMuseumLogo>
+      </Center>
+
       <AuthenticationForm></AuthenticationForm>
     </Modal>
   );

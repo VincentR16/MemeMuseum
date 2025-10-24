@@ -7,9 +7,9 @@ import {
   IconUserCircle,
 } from "@tabler/icons-react";
 import { Group } from "@mantine/core";
-import { MantineLogo } from "@mantinex/mantine-logo";
 import classes from "./style/navbar.module.css";
 import { useModalContext } from "../context/modalContext";
+import MemeMuseumLogo from "./memMuseumLogo";
 
 const data = [
   { link: "", label: "Archive", icon: IconHistory },
@@ -41,8 +41,8 @@ export function Navbar() {
   return (
     <nav className={classes.navbar}>
       <div className={classes.navbarMain}>
-        <Group mt="md" className={classes.header} justify="space-between">
-          <MantineLogo color="violet" size={28} />
+        <Group className={classes.header}>
+          <MemeMuseumLogo></MemeMuseumLogo>
         </Group>
         {links}
       </div>

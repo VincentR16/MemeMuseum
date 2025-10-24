@@ -1,4 +1,4 @@
-import { Title, Group } from "@mantine/core";
+import { Title, Group, ThemeIcon } from "@mantine/core";
 import type { ReactNode } from "react";
 
 type CustomTitleProps = {
@@ -7,14 +7,14 @@ type CustomTitleProps = {
 };
 
 export const CustomTitle = ({ title, icon }: CustomTitleProps) => (
-  <Group>
-        {icon}
+  <Group gap="md">
+    <ThemeIcon  c="grey" variant="transparent" size="lg" radius="md">
+      {icon}
+    </ThemeIcon>
     <Title
       order={3}
+      c=""
       style={{
-        background: "linear-gradient(135deg, #7950f2 0%, #5f3dc4 100%)",
-        WebkitBackgroundClip: "text",
-        WebkitTextFillColor: "transparent",
         fontWeight: 600,
       }}
     >
