@@ -8,11 +8,12 @@ import { CommentService } from 'src/comments/comments.service';
 import { VoteService } from 'src/votes/votes.service';
 import { Vote } from 'src/votes/vote.entity';
 import { Comment } from 'src/comments/comment.entity';
+import { TrendingService } from 'src/trendsApi/trends.service';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Meme, Comment, Vote]), CloudinaryModule],
   controllers: [MemesController],
-  providers: [MemeService, CommentService, VoteService],
+  providers: [MemeService, CommentService, VoteService, TrendingService],
   exports: [MemeService],
 })
 export class MemeModule {}

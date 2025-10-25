@@ -13,7 +13,6 @@ export const CustomTitle = ({ title, icon }: CustomTitleProps) => (
     </ThemeIcon>
     <Title
       order={3}
-      c=""
       style={{
         fontWeight: 600,
       }}

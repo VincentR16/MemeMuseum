@@ -1,37 +1,42 @@
-import { Center, Flex } from "@mantine/core";
+import { Center, Flex, useMantineTheme } from "@mantine/core";
+import { useMediaQuery } from "@mantine/hooks";
 import { Logo } from "./logo.svg";
 
 export default function MemeMuseumLogo() {
+  const theme = useMantineTheme();
+  const isMobile = useMediaQuery(`(max-width: ${theme.breakpoints.sm})`);
+  const logoSize = isMobile ? 40 : 45;
+
   return (
-    <>
-      <Flex direction="column" w="100%">
-        <Center>
-          <Logo width={80} height={80}></Logo>
-        </Center>
-        <Center>
-          <span
-            style={{
-              color: "#862e9c",
-              fontWeight: 800,
-              fontStyle: "italic",
-              fontSize: "1.8rem",
-            }}
-          >
-            Meme
-          </span>
-          <span
-            style={{
-              color: "#5f3dc4",
-              fontWeight: 400,
-              fontFamily: "system-ui, -apple-system, sans-serif",
-              letterSpacing: "0.15em",
-              fontSize: "1.8rem",
-            }}
-          >
-            Museum
-          </span>
-        </Center>
-      </Flex>
-    </>
+    <Flex 
+      direction="row" 
+      w="100%" 
+      justify="center"
+      align="center"
+      wrap="wrap"
+    >
+      <Center>
+        <span style={{
+          color: "var(--mantine-color-violet-7)",
+          fontWeight: 800,
+          fontStyle: "italic",
+          fontSize: "clamp(1.25rem, 5vw, 1.5rem)", 
+        }}>
+          Meme
+        </span>
+        <span style={{
+          color: "#ced4da",
+          fontWeight: 400,
+          fontFamily: "system-ui, -apple-system, sans-serif",
+          letterSpacing: "0.15em",
+          fontSize: "clamp(1.25rem, 5vw, 1.5rem)", 
+        }}>
+          Museum
+        </span>
+      </Center>
+      <Center>
+        <Logo width={logoSize} height={logoSize} />
+      </Center>
+    </Flex>
   );
 }

@@ -6,6 +6,7 @@ import { LogInDto } from './dto/logIn.dto';
 import { SignUpDto } from './dto/singUp.dto';
 import { JwtAuthGuard } from 'src/common/guard/jwt-auth.guard';
 import { AuthenticatedRequest } from 'src/common/types/authenticatedRequest.types';
+import { User } from 'src/users/user.entity';
 
 @Controller('auth')
 export class AuthController {
@@ -29,15 +30,15 @@ export class AuthController {
     @Req() req: Request,
     @Body() dto: SignUpDto,
     @Res({ passthrough: true }) res: Response,
-  ) {
-    const { accessToken, refreshToken } = await this.authservice.signUp(
+  ): Promise<User> {
+    const { accessToken, refreshToken, user } = await this.authservice.signUp(
       dto,
       req,
     );
 
     this.setAuthCookies(res, accessToken, refreshToken);
 
-    return { message: 'SignUp success' };
+    return user;
   }
 
   @UseGuards(JwtAuthGuard)

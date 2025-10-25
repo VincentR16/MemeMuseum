@@ -39,7 +39,7 @@ export class AuthService {
   async signUp(
     dto: SignUpDto,
     req: Request,
-  ): Promise<{ accessToken: string; refreshToken: string }> {
+  ): Promise<{ accessToken: string; refreshToken: string; user: User }> {
     const user = await this.userService.createUser(dto);
 
     const { refreshTokenHash, accessToken, refreshToken } =
@@ -57,6 +57,7 @@ export class AuthService {
     await this.sessionRepository.save(session);
 
     return {
+      user,
       accessToken,
       refreshToken,
     };
