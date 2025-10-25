@@ -95,6 +95,10 @@ export class AuthService {
     };
   }
 
+  getMe(userId: string): Promise<User> {
+    return this.userService.getMe(userId);
+  }
+
   async logout(req: Request) {
     const user = req.user as User;
     const deviceInfo = req.headers['user-agent'] ?? 'unknown';

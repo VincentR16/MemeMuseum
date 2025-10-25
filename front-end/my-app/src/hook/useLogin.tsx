@@ -5,6 +5,7 @@ import { notifications } from "@mantine/notifications";
 import { IconCheck } from "@tabler/icons-react";
 import { useModalContext } from "../context/modalContext";
 import { useAuthContext } from "../context/authContext";
+import { ThemeIcon } from "@mantine/core";
 
 export default function useLogin() {
   const { setUser, setLoading, setIsAuthenticated } = useAuthContext();
@@ -20,7 +21,12 @@ export default function useLogin() {
       notifications.show({
         title: "Login Success",
         message: "Welcome back to MemeMuseum",
-        icon: <IconCheck size={18} />,
+        icon: (
+          <ThemeIcon radius="xl" color="violet">
+            <IconCheck size={18} />
+          </ThemeIcon>
+        ),
+        position: "top-right",
         loading: false,
         autoClose: 3500,
       });
@@ -28,8 +34,8 @@ export default function useLogin() {
     },
 
     onError: (error) => {
-      setIsAuthenticated(false); 
-      setLoading(false); 
+      setIsAuthenticated(false);
+      setLoading(false);
       notifications.show({
         color: "red",
         title: "Invalid Email or Password",

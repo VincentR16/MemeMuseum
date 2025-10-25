@@ -22,6 +22,7 @@ export default function useSignUp() {
       notifications.show({
         title: "Registration Success",
         message: "Welcome to MemeMuseum",
+        position: "top-right",
         icon: <IconCheck size={18} />,
         loading: false,
         autoClose: 3500,

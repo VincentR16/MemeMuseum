@@ -4,6 +4,9 @@ type ModalContextType = {
   authOpened: boolean;
   openAuthModal: () => void;
   closeAuthModal: () => void;
+  logoutOpened: boolean;
+  openLogout: () => void;
+  closeLogout: () => void;
 };
 
 export const ModalContext = createContext<ModalContextType | undefined>(

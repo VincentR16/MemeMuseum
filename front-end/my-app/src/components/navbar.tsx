@@ -3,6 +3,7 @@ import {
   IconCalendarEvent,
   IconCircleDashedPlus,
   IconHistory,
+  IconLogin,
   IconLogout,
   IconUserCircle,
 } from "@tabler/icons-react";
@@ -10,6 +11,7 @@ import { Group } from "@mantine/core";
 import classes from "./style/navbar.module.css";
 import { useModalContext } from "../context/modalContext";
 import MemeMuseumLogo from "./memMuseumLogo";
+import { useAuthContext } from "../context/authContext";
 
 const data = [
   { link: "", label: "Archive", icon: IconHistory },
@@ -19,8 +21,9 @@ const data = [
 ];
 
 export function Navbar() {
+  const { isAuthenticated } = useAuthContext();
   const [active, setActive] = useState("Archive");
-  const { openAuthModal } = useModalContext();
+  const { openAuthModal, openLogout } = useModalContext();
 
   const links = data.map((item) => (
     <a
@@ -54,11 +57,22 @@ export function Navbar() {
           onClick={(event) => {
             event.preventDefault();
             setActive("Logout");
-            openAuthModal();
+            if (isAuthenticated) {
+              openLogout();
+            } else openAuthModal();
           }}
         >
-          <IconLogout className={classes.linkIcon} stroke={1.5} />
-          <span>Logout</span>
+          {isAuthenticated ? (
+            <>
+              <IconLogout className={classes.linkIcon} stroke={1.5} />
+              <span>Logout</span>
+            </>
+          ) : (
+            <>
+              <IconLogin className={classes.linkIcon} stroke={1.5} />
+              <span>Login or Sign Up</span>
+            </>
+          )}
         </a>
       </div>
     </nav>

@@ -2,6 +2,7 @@ import { AppShell, Burger, Group } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { Navbar } from "../components/navbar";
 import AuthModal from "../components/authModal";
+import LogoutModal from "../components/logoutModal";
 
 export default function RootLayout() {
   const [mobileOpened, { toggle: toggleMobile }] = useDisclosure();
@@ -32,8 +33,8 @@ export default function RootLayout() {
       </AppShell.Navbar>
 
       <AppShell.Main>Main</AppShell.Main>
-
       <AuthModal></AuthModal>
+      <LogoutModal></LogoutModal>
     </AppShell>
   );
 }
