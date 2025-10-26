@@ -1,5 +1,5 @@
 import { useForm } from "@mantine/form";
-import type { RegisterRequest } from "../../types/RegisterRequest.types";
+import type { RegisterRequest } from "../../types/RegisterRequest.type";
 
 export function useRegisterForm() {
   return useForm<RegisterRequest>({
@@ -15,15 +15,16 @@ export function useRegisterForm() {
     },
 
     validate: {
-      name: (val) => (val.trim().length > 0 ? null : "Il nome è obbligatorio"),
+      name: (val) => (val.trim().length > 0 ? null : "Name is required"),
+      username: (val) => (val.trim().length > 0 ? null : "Username is required"),
 
       surname: (val) =>
-        val.trim().length > 0 ? null : "Il cognome è obbligatorio",
+        val.trim().length > 0 ? null : "Surname is required",
 
       email: (val) =>
         /^\S+@\S+\.\S+$/.test(val)
           ? null
-          : "Inserisci un indirizzo email valido",
+          : "Email address not valid",
 
       password: (val) =>
         val.length < 6
@@ -38,9 +39,9 @@ export function useRegisterForm() {
       gender: (val) =>
         typeof val === "string" && val.trim().length > 0
           ? null
-          : "Seleziona il genere",
+          : "select your gender",
 
-      birthDate: (val) => (val ? null : "La data di nascita è obbligatoria"),
+      birthDate: (val) => (val ? null : "Birthdate is required"),
     },
   });
 }

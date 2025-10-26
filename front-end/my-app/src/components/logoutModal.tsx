@@ -1,4 +1,4 @@
-import { Button, Group, Modal, Text } from "@mantine/core";
+import { Button, Divider, Group, Modal, Text } from "@mantine/core";
 import { CustomTitle } from "./customTitle";
 import { IconLogout, IconX } from "@tabler/icons-react";
 import useLogout from "../hook/useLogout";
@@ -22,7 +22,10 @@ export default function LogoutModal() {
         icon: <IconX size={20} color="red"></IconX>,
       }}
     >
-      <Text ml={5}>Are you sure you want to logout?</Text>
+      <Divider></Divider>
+      <Text mt="md" ml={5}>
+        Are you sure you want to logout?
+      </Text>
 
       <Text fs="italic" fw={600} mt={5} ml={5}>
         This action cannot be undone.

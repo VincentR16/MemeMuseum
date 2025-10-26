@@ -7,11 +7,12 @@ import {
 import { Repository } from 'typeorm';
 import { Meme } from './meme.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { createMemeDto } from './dto/createMeme.dto';
+import { CreateMemeDto } from './dto/createMeme.dto';
 import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
 import { UpdateMemeDto } from './dto/updateMeme.dto';
 import { PaginatedMemeResponseDto } from './dto/paginatedMemeResponse.dto';
 import { TrendingService } from 'src/trendsApi/trends.service';
+import { TagService } from 'src/tags/tags.service';
 
 @Injectable()
 export class MemeService {
@@ -20,29 +21,34 @@ export class MemeService {
     private readonly memeRepository: Repository<Meme>,
     private readonly cloudinaryService: CloudinaryService,
     private readonly trendingService: TrendingService,
+    private readonly tagService: TagService,
   ) {}
 
   async create(
     imageFile: Express.Multer.File,
     userId: string,
-    dto: createMemeDto,
+    dto: CreateMemeDto,
   ): Promise<Meme> {
-    const { title, description } = dto;
+    const { title, description, tags } = dto;
+
     if (!imageFile) {
       throw new BadRequestException('No image file provided');
     }
+
     const uploadResult =
       await this.cloudinaryService.uploadImageToCloudinary(imageFile);
 
-    const meme = this.memeRepository.create({
+    const tagEntities = await this.tagService.findOrCreateTags(tags || []);
+
+    const meme = await this.memeRepository.save({
       title,
       description,
-      cloudinaryImageUrl: uploadResult.url,
-      cloudinaryPublicId: uploadResult.public_id,
-      userId,
+      imageUrl: uploadResult.secure_url,
+      user: { id: userId },
+      tags: tagEntities,
     });
 
-    return await this.memeRepository.save(meme);
+    return meme;
   }
 
   async getMemes(page: number): Promise<PaginatedMemeResponseDto> {

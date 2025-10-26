@@ -7,6 +7,9 @@ type ModalContextType = {
   logoutOpened: boolean;
   openLogout: () => void;
   closeLogout: () => void;
+  memeOpened: boolean;
+  openMeme: () => void;
+  closeMeme: () => void;
 };
 
 export const ModalContext = createContext<ModalContextType | undefined>(

@@ -14,18 +14,27 @@ export class TagService {
     private readonly tagRepository: Repository<Tag>,
   ) {}
 
-  async create(name: string): Promise<Tag> {
-    const tag = await this.tagRepository.findOne({
-      where: { name },
-    });
-    if (tag) throw new BadRequestException('Tag name already exists');
+  async findOrCreateTags(tagNames: string[]): Promise<Tag[]> {
+    if (!tagNames || tagNames.length === 0) {
+      return [];
+    }
 
-    const newTag = this.tagRepository.create({
-      name,
-      count: 1,
-    });
+    const tags = await Promise.all(
+      tagNames.map(async (name) => {
+        let tag = await this.tagRepository.findOne({ where: { name } });
 
-    return await this.tagRepository.save(newTag);
+        if (tag) {
+          tag.count += 1;
+          await this.tagRepository.save(tag);
+        } else {
+          tag = await this.tagRepository.save({ name, count: 1 });
+        }
+
+        return tag;
+      }),
+    );
+
+    return tags;
   }
 
   async get(name: string): Promise<Tag> {
@@ -36,14 +45,15 @@ export class TagService {
     return tag;
   }
 
-  async getByCount(): Promise<Tag[]> {
+  async getByCount(): Promise<string[]> {
     const tags = await this.tagRepository.find({
+      select: ['name'],
       order: {
         count: 'DESC',
       },
     });
 
-    return tags;
+    return tags.map((tag) => tag.name);
   }
 
   async getByCreation(): Promise<Tag[]> {
@@ -54,13 +64,6 @@ export class TagService {
     });
 
     return tags;
-  }
-
-  async incrementCount(name: string): Promise<Tag> {
-    const tag = await this.get(name);
-
-    tag.count = tag.count++;
-    return await this.tagRepository.save(tag);
   }
 
   async decrementCount(name: string): Promise<Tag> {

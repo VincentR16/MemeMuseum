@@ -15,7 +15,6 @@ import { Meme } from './meme.entity';
 import { JwtAuthGuard } from 'src/common/guard/jwt-auth.guard';
 import { MemeService } from './memes.service';
 import { UserId } from 'src/common/decoretor/userId.decoretor';
-import { createMemeDto } from './dto/createMeme.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ImageFileValidationPipe } from 'src/common/pipe/image-file-validation-pipe';
 import { PaginatedMemeResponseDto } from './dto/paginatedMemeResponse.dto';
@@ -25,6 +24,7 @@ import { CommentService } from 'src/comments/comments.service';
 import { CommentDto } from 'src/comments/dto/comment.dto';
 import { VoteService } from 'src/votes/votes.service';
 import { VoteType } from 'src/common/types/votes.types';
+import { CreateMemeDto } from './dto/createMeme.dto';
 
 @Controller('memes')
 export class MemesController {
@@ -40,7 +40,7 @@ export class MemesController {
   createMeme(
     @UploadedFile(ImageFileValidationPipe) file: Express.Multer.File,
     @UserId() userId: string,
-    @Body() dto: createMemeDto,
+    @Body() dto: CreateMemeDto,
   ): Promise<Meme> {
     return this.memeService.create(file, userId, dto);
   }
@@ -53,36 +53,37 @@ export class MemesController {
     return this.memeService.getMemeOftheday(page);
   }
 
-  @Get('memes')
+  @Get()
   @UseGuards(ThrottlerGuard)
   getMemes(@Query('page') page: number): Promise<PaginatedMemeResponseDto> {
     return this.memeService.getMemes(page);
   }
 
-  @Get(':Id')
+  @Get(':id')
   @UseGuards(JwtAuthGuard)
-  getMeme(@Param('Id') id: string): Promise<Meme> {
+  getMeme(@Param('id') id: string): Promise<Meme> {
     return this.memeService.get(id);
   }
 
-  @Delete(':Id')
+  @Delete(':id')
   @UseGuards(JwtAuthGuard)
-  async delete(@UserId() userId: string, @Param('Id') id: string) {
+  async delete(@UserId() userId: string, @Param('id') id: string) {
     await this.memeService.delete(id, userId);
     return { message: 'meme delete success' };
   }
 
-  @Patch(':Id')
+  @Patch(':id')
   @UseGuards(JwtAuthGuard)
   update(
     @UserId() userId: string,
-    @Param('Id') id: string,
+    @Param('id') id: string,
     @Body() dto: UpdateMemeDto,
   ): Promise<Meme> {
     return this.memeService.update(id, userId, dto);
   }
 
-  @Post(':id')
+  @Post(':id/comments')
+  @UseGuards(JwtAuthGuard)
   createComment(
     @UserId() userId: string,
     @Param('id') memeId: string,
@@ -91,27 +92,31 @@ export class MemesController {
     return this.commentService.create(memeId, userId, dto);
   }
 
-  @Get(':id')
+  @Get(':id/comments')
   getAllComment(@Param('id') memeId: string) {
     return this.commentService.getAll(memeId);
   }
 
   @Post(':id/upvote')
+  @UseGuards(JwtAuthGuard)
   async upvoteMeme(@Param('id') memeId: string, @UserId() userId: string) {
     return await this.voteService.voteMeme(memeId, userId, VoteType.VOTEUP);
   }
 
   @Post(':id/downvote')
+  @UseGuards(JwtAuthGuard)
   async downvoteMeme(@Param('id') memeId: string, @UserId() userId: string) {
     return await this.voteService.voteMeme(memeId, userId, VoteType.VOTEDOWN);
   }
 
   @Post(':id/remove-vote')
+  @UseGuards(JwtAuthGuard)
   async removeVoteMeme(@Param('id') memeId: string, @UserId() userId: string) {
     return await this.voteService.voteMeme(memeId, userId, VoteType.NOVOTE);
   }
 
   @Get(':id/my-vote')
+  @UseGuards(JwtAuthGuard)
   async getMyVote(@Param('id') memeId: string, @UserId() userId: string) {
     return await this.voteService.getUserVote(memeId, userId);
   }

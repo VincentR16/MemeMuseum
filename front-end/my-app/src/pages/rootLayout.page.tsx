@@ -3,9 +3,14 @@ import { useDisclosure } from "@mantine/hooks";
 import { Navbar } from "../components/navbar";
 import AuthModal from "../components/authModal";
 import LogoutModal from "../components/logoutModal";
+import { Outlet } from "react-router-dom";
+import PostMemeButton from "../components/postMemeButton";
+import MemeModal from "../components/memeModal";
+import { useState } from "react";
 
 export default function RootLayout() {
   const [mobileOpened, { toggle: toggleMobile }] = useDisclosure();
+  const [active, setActive] = useState("Archive");
 
   return (
     <AppShell
@@ -29,14 +34,21 @@ export default function RootLayout() {
       </AppShell.Header>
 
       <AppShell.Navbar>
-        <Navbar></Navbar>
+        <Navbar setActive={setActive} active={active} />
       </AppShell.Navbar>
 
-      <AppShell.Main>Main</AppShell.Main>
-      <AuthModal></AuthModal>
-      <LogoutModal></LogoutModal>
+      <AppShell.Main>
+        <Outlet />
+        <PostMemeButton />
+      </AppShell.Main>
+
+      <MemeModal
+        setNavabar={setActive}
+        toggleMobile={toggleMobile}
+        mobileOpened={mobileOpened}
+      />
+      <AuthModal />
+      <LogoutModal />
     </AppShell>
   );
 }
-
-// se necessario aggiungere la navbar che si richiude anche per il computer, ma non sembra il caso

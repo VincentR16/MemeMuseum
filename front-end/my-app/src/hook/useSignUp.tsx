@@ -1,7 +1,7 @@
 import { useMutation } from "@tanstack/react-query";
-import type { RegisterRequest } from "../types/RegisterRequest.types";
+import type { RegisterRequest } from "../types/RegisterRequest.type";
 import { signUpApi } from "../api/signUp.api";
-import type { User } from "../types/User.types";
+import type { User } from "../types/User.type";
 import { notifications } from "@mantine/notifications";
 import { IconCheck } from "@tabler/icons-react";
 import { useModalContext } from "../context/modalContext";

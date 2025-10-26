@@ -1,5 +1,5 @@
 import { useState, type ReactNode } from "react";
-import type { User } from "../types/User.types";
+import type { User } from "../types/User.type";
 import { AuthContext } from "./authContext";
 
 

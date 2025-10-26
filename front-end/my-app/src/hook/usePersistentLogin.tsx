@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useAuthContext } from "../context/authContext";
-import { getMeApi } from "../api/getMeApi";
+import { getMeApi } from "../api/getMe.api";
 
 export default function usePersistentLogin() {
   const { setUser, setIsAuthenticated, setLoading } = useAuthContext();

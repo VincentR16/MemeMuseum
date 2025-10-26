@@ -1,4 +1,3 @@
-import { useState } from "react";
 import {
   IconCalendarEvent,
   IconCircleDashedPlus,
@@ -20,10 +19,13 @@ const data = [
   { link: "", label: "Profile", icon: IconUserCircle },
 ];
 
-export function Navbar() {
+interface NavbarProps {
+  setActive: React.Dispatch<React.SetStateAction<string>>;
+  active: string;
+}
+export function Navbar({ setActive, active }: NavbarProps) {
   const { isAuthenticated } = useAuthContext();
-  const [active, setActive] = useState("Archive");
-  const { openAuthModal, openLogout } = useModalContext();
+  const { openAuthModal, openLogout, openMeme } = useModalContext();
 
   const links = data.map((item) => (
     <a
@@ -34,6 +36,12 @@ export function Navbar() {
       onClick={(event) => {
         event.preventDefault();
         setActive(item.label);
+
+        switch (item.label) {
+          case "Post a Meme":
+            openMeme();
+            break;
+        }
       }}
     >
       <item.icon className={classes.linkIcon} stroke={1.5} />

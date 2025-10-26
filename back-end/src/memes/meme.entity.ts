@@ -59,7 +59,7 @@ export class Meme {
 
   @ManyToMany(() => Tag, (tag) => tag.memes)
   @JoinTable({
-    name: 'meme_tags', // nome della tabella di join
+    name: 'meme_tags',
     joinColumn: { name: 'memeId', referencedColumnName: 'id' },
     inverseJoinColumn: { name: 'tagId', referencedColumnName: 'id' },
   })

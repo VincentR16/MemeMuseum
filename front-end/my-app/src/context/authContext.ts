@@ -1,5 +1,5 @@
 import { createContext, useContext } from "react";
-import type { User } from "../types/User.types";
+import type { User } from "../types/User.type";
 
 
 

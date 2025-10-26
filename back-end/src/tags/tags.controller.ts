@@ -4,25 +4,19 @@ import {
   Delete,
   Get,
   Param,
-  Post,
   UseGuards,
 } from '@nestjs/common';
 import { TagService } from './tags.service';
 import { JwtAuthGuard } from 'src/common/guard/jwt-auth.guard';
 import { Tag } from './tag.entity';
-import { TagDto } from './dto/tag.dto';
 
-@Controller('tags')
+@Controller('tag')
 @UseGuards(JwtAuthGuard)
 export class TagController {
   constructor(private readonly tagService: TagService) {}
-  @Post()
-  create(@Body() dto: TagDto): Promise<Tag> {
-    return this.tagService.create(dto.name);
-  }
 
   @Get('by-count')
-  getByCount(): Promise<Tag[]> {
+  getByCount(): Promise<string[]> {
     return this.tagService.getByCount();
   }
 

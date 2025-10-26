@@ -53,10 +53,10 @@ export class TrendingService {
     }
   }
 
-  async onModuleInit(): Promise<void> {
+  /* async onModuleInit(): Promise<void> {
     console.log('TrendingService initialized. Fetching initial data...');
     await this.updateDailyTrending();
-  }
+  } */
 
   getDailyKeywords(): string[] {
     return this.dailyTrendingKeywords;
