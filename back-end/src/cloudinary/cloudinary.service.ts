@@ -1,6 +1,6 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import toStream from 'buffer-to-stream';
 import { UploadApiErrorResponse, UploadApiResponse, v2 } from 'cloudinary';
+import { Readable } from 'stream'; // Import Node.js stream
 
 @Injectable()
 export class CloudinaryService {
@@ -10,8 +10,6 @@ export class CloudinaryService {
     if (!file.buffer || file.buffer.length === 0) {
       throw new BadRequestException('File buffer is empty');
     }
-
-    const fileBuffer: Buffer = file.buffer;
 
     return new Promise<UploadApiResponse>((resolve, reject) => {
       const uploadStream = v2.uploader.upload_stream(
@@ -33,8 +31,8 @@ export class CloudinaryService {
           }
         },
       );
-
-      toStream(fileBuffer).pipe(uploadStream);
+      const bufferStream = Readable.from(file.buffer);
+      bufferStream.pipe(uploadStream);
     });
   }
 

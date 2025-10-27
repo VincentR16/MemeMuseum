@@ -1,6 +1,6 @@
 export type CreateMemeRequest = {
-  image: File | null;
+  image: File;
   title: string;
   description?: string;
-  Tags?: string[];
+  tags?: string[];
 };

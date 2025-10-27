@@ -1,13 +1,13 @@
 import { useForm } from "@mantine/form";
 import type { CreateMemeRequest } from "../../types/CreateMemeRequest";
 
-export function usePostMemeForm() {
+export function useMemeForm() {
   return useForm<CreateMemeRequest>({
     initialValues: {
-      image: null,
+      image: null as unknown as File,
       title: "",
       description: "",
-      Tags: [],
+      tags: [],
     },
     validate: {
       image: (value) => (value ? null : "Image is required"),
@@ -21,7 +21,7 @@ export function usePostMemeForm() {
         return null;
       },
 
-      Tags: (value) => {
+      tags: (value) => {
         if (!value || value.length === 0) return null;
 
         const invalidTags = value.filter(

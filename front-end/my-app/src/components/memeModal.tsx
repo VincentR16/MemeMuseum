@@ -10,6 +10,9 @@ import {
   ThemeIcon,
   Image,
   Flex,
+  Box,
+  Loader,
+  Center,
 } from "@mantine/core";
 import {
   IconPhoto,
@@ -18,11 +21,12 @@ import {
   IconX,
 } from "@tabler/icons-react";
 import { useModalContext } from "../context/modalContext";
-import { usePostMemeForm } from "../hook/form/usePostMemeForm";
+import { useMemeForm } from "../hook/form/useMemeForm";
 import { CustomTitle } from "./customTitle";
 import useTags from "../hook/useTags";
 import { useMemo } from "react";
 import { useMediaQuery } from "@mantine/hooks";
+import usePostMeme from "../hook/usePostMeme";
 
 interface MemeProps {
   setNavabar: React.Dispatch<React.SetStateAction<string>>;
@@ -36,32 +40,54 @@ export default function MemeModal({
   toggleMobile,
 }: MemeProps) {
   const { memeOpened, closeMeme } = useModalContext();
-  const form = usePostMemeForm();
+  const form = useMemeForm();
   const { data: tags, isLoading: isLoadingTags } = useTags();
   const isMobile = useMediaQuery("(max-width: 768px)");
+  const postMeme = usePostMeme();
+  const { isPending } = postMeme;
 
   const imagePreview = useMemo(() => {
     return form.values.image ? URL.createObjectURL(form.values.image) : null;
   }, [form.values.image]);
 
-  const handleSubmit = form.onSubmit((values) => {
-    console.log(values);
+  function handleClose() {
+    setNavabar("Archive");
+    closeMeme();
+    if (isMobile && mobileOpened) {
+      toggleMobile();
+    }
+    setTimeout(() => {
+      form.reset();
+    }, 500);
+  }
+
+  const handleSubmit = form.onSubmit(async (values) => {
+    const data = new FormData();
+    data.append("image", values.image);
+    data.append("title", values.title);
+    if (values.description) data.append("description", values.description);
+
+    if (values.tags && values.tags.length > 0) {
+      values.tags.forEach((tag) => {
+        data.append("tags", tag);
+      });
+    } else {
+      data.append("tags", JSON.stringify([]));
+    }
+    await postMeme.mutateAsync(data);
+    handleClose();
   });
 
   return (
     <Modal
+      size="55%"
       fullScreen={isMobile}
       radius="lg"
       opened={memeOpened}
-      onClose={() => {
-        setNavabar("Archive");
-        closeMeme();
-        if (isMobile && mobileOpened) {
-          toggleMobile();
-        }
-        setTimeout(() => {
-          form.reset();
-        }, 2000);
+      onClose={handleClose}
+      transitionProps={{
+        transition: "slide-up",
+        duration: 400,
       }}
       title={
         <CustomTitle
@@ -69,7 +95,6 @@ export default function MemeModal({
           icon={<IconWorldUpload color="gray" size={30} />}
         />
       }
-      size="xl"
       centered
       withinPortal={false}
       closeButtonProps={{
@@ -80,70 +105,93 @@ export default function MemeModal({
         ),
       }}
     >
-      <form onSubmit={handleSubmit}>
-        <Stack gap="md">
-          <Flex mt="md" justify="center" w="100%">
-            <Image
-              src={imagePreview}
-              h={300}
-              w="auto"
-              maw="100%"
-              fit="contain"
-              fallbackSrc="https://placehold.co/600x400/EEE/999?text=Upload+Image"
-              radius="xl"
+      {isPending ? (
+        <Center h="50vh">
+          <Loader size="xl" color="violet" />
+        </Center>
+      ) : (
+        <form onSubmit={handleSubmit}>
+          <Stack gap="md">
+            <Flex direction="row" gap="md" justify="center">
+              <FileInput
+                style={{ display: "none" }}
+                ref={(ref) => {
+                  if (ref) {
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                    (window as any).fileInputRef = ref;
+                  }
+                }}
+                label="Image"
+                placeholder="Upload Image"
+                accept="image/png,image/jpeg,image/jpg,image/gif,image/webp"
+                leftSection={<IconPhoto size={16} />}
+                required
+                {...form.getInputProps("image")}
+              />
+              <Box
+                onClick={() => {
+                  const input = document.querySelector(
+                    'input[type="file"]'
+                  ) as HTMLInputElement;
+                  input?.click();
+                }}
+                style={{ cursor: "pointer" }}
+              >
+                <Image
+                  src={imagePreview}
+                  h="38vh"
+                  w="auto"
+                  maw="100%"
+                  fit="contain"
+                  fallbackSrc="https://placehold.co/600x400/EEE/999?text=Click+to+upload+a+image"
+                  radius="xl"
+                />
+              </Box>
+            </Flex>
+
+            <TextInput
+              label="Title"
+              placeholder="Write the title"
+              required
+              {...form.getInputProps("title")}
             />
-          </Flex>
 
-          <FileInput
-            label="Image"
-            placeholder="Upload Image"
-            accept="image/png,image/jpeg,image/jpg,image/gif,image/webp"
-            leftSection={<IconPhoto size={16} />}
-            required
-            {...form.getInputProps("image")}
-          />
+            <Textarea
+              label="Caption"
+              placeholder="Describe your meme (optional)"
+              minRows={2}
+              maxRows={5}
+              autosize
+              {...form.getInputProps("description")}
+            />
 
-          <TextInput
-            label="Title"
-            placeholder="Write the title"
-            required
-            {...form.getInputProps("title")}
-          />
+            <TagsInput
+              label="Tags"
+              placeholder="Select existing tags or type new ones"
+              data={tags ?? []}
+              acceptValueOnBlur
+              splitChars={[",", " ", "|"]}
+              clearable
+              maxDropdownHeight={200}
+              disabled={isLoadingTags}
+              {...form.getInputProps("tags")}
+            />
 
-          <Textarea
-            label="Caption"
-            placeholder="Describe your meme (optional)"
-            minRows={3}
-            maxRows={5}
-            autosize
-            {...form.getInputProps("description")}
-          />
-
-          <TagsInput
-            label="Tags"
-            placeholder="Select existing tags or type new ones"
-            data={tags ?? []}
-            acceptValueOnBlur
-            splitChars={[",", " ", "|"]}
-            clearable
-            disabled={isLoadingTags}
-            {...form.getInputProps("tags")}
-          />
-
-          <Group justify="flex-end" mt="md">
-            <Button variant="subtle" color="gray" onClick={closeMeme}>
-              Annulla
-            </Button>
-            <Button
-              type="submit"
-              color="violet.9"
-              leftSection={<IconUpload size={16} />}
-            >
-              Post
-            </Button>
-          </Group>
-        </Stack>
-      </form>
+            <Group justify="flex-end" mt="md">
+              <Button variant="outline" color="gray" onClick={handleClose}>
+                Cancel
+              </Button>
+              <Button
+                type="submit"
+                color="violet.9"
+                leftSection={<IconUpload size={16} />}
+              >
+                Post
+              </Button>
+            </Group>
+          </Stack>
+        </form>
+      )}
     </Modal>
   );
 }

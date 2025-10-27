@@ -43,7 +43,8 @@ export class MemeService {
     const meme = await this.memeRepository.save({
       title,
       description,
-      imageUrl: uploadResult.secure_url,
+      cloudinaryImageUrl: uploadResult.secure_url,
+      cloudinaryPublicId: uploadResult.public_id,
       user: { id: userId },
       tags: tagEntities,
     });
