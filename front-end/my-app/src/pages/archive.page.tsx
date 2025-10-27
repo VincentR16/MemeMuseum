@@ -1,5 +1,3 @@
 export default function ArchivePage() {
-    return (
-        <>ciao</>
-    )
+  return <>Ciao</>;
 }

@@ -1,5 +1,6 @@
 import { useForm } from "@mantine/form";
 import type { CreateMemeRequest } from "../../types/CreateMemeRequest";
+import { notifications } from "@mantine/notifications";
 
 export function useMemeForm() {
   return useForm<CreateMemeRequest>({
@@ -10,7 +11,17 @@ export function useMemeForm() {
       tags: [],
     },
     validate: {
-      image: (value) => (value ? null : "Image is required"),
+      image: (value) => {
+        if (!value) {
+          notifications.show({
+            title: "Missing image",
+            message: "Please upload an image",
+            color: "red",
+          });
+          return "Image is required";
+        }
+        return null;
+      },
 
       title: (val) => (val.trim().length > 0 ? null : "Name is required"),
 

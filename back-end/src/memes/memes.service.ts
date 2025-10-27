@@ -52,8 +52,10 @@ export class MemeService {
     return meme;
   }
 
-  async getMemes(page: number): Promise<PaginatedMemeResponseDto> {
-    const limit = 10;
+  async getMemes(
+    page: number,
+    limit: number,
+  ): Promise<PaginatedMemeResponseDto> {
     const skip = (page - 1) * limit;
 
     const [memes, totalItems] = await this.memeRepository.findAndCount({
@@ -79,8 +81,10 @@ export class MemeService {
     };
   }
 
-  async getMemeOftheday(page: number): Promise<PaginatedMemeResponseDto> {
-    const limit = 10;
+  async getMemeOftheday(
+    page: number,
+    limit: number,
+  ): Promise<PaginatedMemeResponseDto> {
     const skip = (page - 1) * limit;
 
     const trends = this.trendingService.getDailyKeywords();

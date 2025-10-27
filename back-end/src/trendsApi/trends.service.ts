@@ -12,7 +12,7 @@ export class TrendingService {
 
   constructor(private readonly configService: ConfigService) {}
 
-  @Cron('0 */12 * * *')
+  // @Cron('0 */12 * * *')
   async updateDailyTrending(): Promise<void> {
     console.log('Updating daily trending keywords...');
 

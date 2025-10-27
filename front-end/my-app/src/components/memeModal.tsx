@@ -1,6 +1,5 @@
 import {
   Button,
-  FileInput,
   Group,
   Modal,
   TagsInput,
@@ -8,11 +7,10 @@ import {
   Textarea,
   TextInput,
   ThemeIcon,
-  Image,
-  Flex,
-  Box,
+  Text,
   Loader,
   Center,
+  Space,
 } from "@mantine/core";
 import {
   IconPhoto,
@@ -27,6 +25,7 @@ import useTags from "../hook/useTags";
 import { useMemo } from "react";
 import { useMediaQuery } from "@mantine/hooks";
 import usePostMeme from "../hook/usePostMeme";
+import { Dropzone, IMAGE_MIME_TYPE } from "@mantine/dropzone";
 
 interface MemeProps {
   setNavabar: React.Dispatch<React.SetStateAction<string>>;
@@ -69,10 +68,8 @@ export default function MemeModal({
 
     if (values.tags && values.tags.length > 0) {
       values.tags.forEach((tag) => {
-        data.append("tags", tag);
+        data.append("tags[]", tag);
       });
-    } else {
-      data.append("tags", JSON.stringify([]));
     }
     await postMeme.mutateAsync(data);
     handleClose();
@@ -96,7 +93,7 @@ export default function MemeModal({
         />
       }
       centered
-      withinPortal={false}
+      withinPortal={true}
       closeButtonProps={{
         icon: (
           <ThemeIcon color="red.9" variant="light">
@@ -111,52 +108,85 @@ export default function MemeModal({
         </Center>
       ) : (
         <form onSubmit={handleSubmit}>
+          <Space h="xs"></Space>
+
           <Stack gap="md">
-            <Flex direction="row" gap="md" justify="center">
-              <FileInput
-                style={{ display: "none" }}
-                ref={(ref) => {
-                  if (ref) {
-                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                    (window as any).fileInputRef = ref;
-                  }
-                }}
-                label="Image"
-                placeholder="Upload Image"
-                accept="image/png,image/jpeg,image/jpg,image/gif,image/webp"
-                leftSection={<IconPhoto size={16} />}
-                required
-                {...form.getInputProps("image")}
-              />
-              <Box
-                onClick={() => {
-                  const input = document.querySelector(
-                    'input[type="file"]'
-                  ) as HTMLInputElement;
-                  input?.click();
-                }}
-                style={{ cursor: "pointer" }}
-              >
-                <Image
-                  src={imagePreview}
-                  h="38vh"
-                  w="auto"
-                  maw="100%"
-                  fit="contain"
-                  fallbackSrc="https://placehold.co/600x400/EEE/999?text=Click+to+upload+a+image"
-                  radius="xl"
-                />
-              </Box>
-            </Flex>
+            <Dropzone
+              mt="xl"
+              onDrop={(files) => {
+                if (files.length > 0) {
+                  form.setFieldValue("image", files[0]);
+                }
+              }}
+              maxSize={20 * 1024 ** 2}
+              accept={IMAGE_MIME_TYPE}
+              style={{ cursor: "pointer" }}
+            >
+              {imagePreview ? (
+                <Group justify="center" gap="xl" mih={220}>
+                  <img
+                    src={imagePreview}
+                    alt="Preview"
+                    style={{
+                      maxHeight: "300px",
+                      maxWidth: "100%",
+                      objectFit: "contain",
+                      borderRadius: "8px",
+                    }}
+                  />
+                </Group>
+              ) : (
+                <Group
+                  justify="center"
+                  gap="xl"
+                  mih={220}
+                  style={{ pointerEvents: "none" }}
+                >
+                  <Dropzone.Accept>
+                    <IconUpload
+                      size={52}
+                      color="var(--mantine-color-blue-6)"
+                      stroke={1.5}
+                    />
+                  </Dropzone.Accept>
+                  <Dropzone.Reject>
+                    <IconX
+                      size={52}
+                      color="var(--mantine-color-red-6)"
+                      stroke={1.5}
+                    />
+                  </Dropzone.Reject>
+                  <Dropzone.Idle>
+                    <IconPhoto
+                      size={52}
+                      color="var(--mantine-color-dimmed)"
+                      stroke={1.5}
+                    />
+                  </Dropzone.Idle>
+
+                  <div>
+                    <Text size="xl" inline>
+                      Drag images here or click to select files
+                    </Text>
+                    <Text size="sm" c="dimmed" inline mt={7}>
+                      Max file size: 20 MB (supports images and GIFs)
+                    </Text>
+                  </div>
+                </Group>
+              )}
+            </Dropzone>
 
             <TextInput
+              size="md"
               label="Title"
               placeholder="Write the title"
-              required
+              error={form.errors}
+              withAsterisk
               {...form.getInputProps("title")}
             />
 
             <Textarea
+              size="md"
               label="Caption"
               placeholder="Describe your meme (optional)"
               minRows={2}
@@ -164,8 +194,8 @@ export default function MemeModal({
               autosize
               {...form.getInputProps("description")}
             />
-
             <TagsInput
+              size="md"
               label="Tags"
               placeholder="Select existing tags or type new ones"
               data={tags ?? []}
@@ -174,10 +204,16 @@ export default function MemeModal({
               clearable
               maxDropdownHeight={200}
               disabled={isLoadingTags}
+              comboboxProps={{
+                withinPortal: false,
+                position: "top",
+                middlewares: { flip: false, shift: false },
+              }}
               {...form.getInputProps("tags")}
             />
+            <Space h="xs"></Space>
 
-            <Group justify="flex-end" mt="md">
+            <Group justify="flex-end" mt="xl" mb="xs">
               <Button variant="outline" color="gray" onClick={handleClose}>
                 Cancel
               </Button>
