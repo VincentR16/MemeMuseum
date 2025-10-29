@@ -59,7 +59,7 @@ export class MemeService {
     const skip = (page - 1) * limit;
 
     const [memes, totalItems] = await this.memeRepository.findAndCount({
-      relations: ['user', 'comments'],
+      relations: ['user', 'comments', 'tags'],
       skip,
       take: limit,
       order: { createdAt: 'DESC' },
@@ -94,7 +94,6 @@ export class MemeService {
       .leftJoinAndSelect('meme.user', 'user')
       .leftJoinAndSelect('meme.comments', 'comments');
 
-    // Costruisci le condizioni OR per ogni trend
     const conditions = trends
       .map((index) => {
         return `(
@@ -105,7 +104,6 @@ export class MemeService {
       })
       .join(' OR ');
 
-    // Aggiungi i parametri
     const parameters: Record<string, string> = {};
     trends.forEach((trend, index) => {
       parameters[`trend${index}`] = `%${trend.toLowerCase()}%`;

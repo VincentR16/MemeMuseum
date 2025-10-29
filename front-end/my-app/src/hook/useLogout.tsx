@@ -1,5 +1,5 @@
 import { useMutation } from "@tanstack/react-query";
-import { logoutApi } from "../api/logoutApi";
+import { logoutApi } from "../api/logout.api";
 import { useAuthContext } from "../context/authContext";
 import { notifications } from "@mantine/notifications";
 import { ThemeIcon } from "@mantine/core";

@@ -1,4 +1,9 @@
-import { AppShell, Burger, Group } from "@mantine/core";
+import {
+  AppShell,
+  Burger,
+  Group,
+
+} from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { Navbar } from "../components/navbar";
 import AuthModal from "../components/authModal";
@@ -21,13 +26,18 @@ export default function RootLayout() {
         collapsed: { mobile: !mobileOpened },
       }}
     >
-      <AppShell.Header hiddenFrom="sm">
-        <Group h="100%" px="md">
+      <AppShell.Header
+        hiddenFrom="sm"
+        style={{
+          top: 0,
+          zIndex: 200,
+        }}
+      >
+        <Group h={50} px="md">
           <Burger
             color="violet"
             opened={mobileOpened}
             onClick={toggleMobile}
-            hiddenFrom="sm"
             size="sm"
           />
         </Group>

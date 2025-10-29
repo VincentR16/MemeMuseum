@@ -7,6 +7,7 @@ export type User = {
   email: string;
   location: string;
   birthDate: string;
+  username: string;
   gender: string;
   role: RoleType;
 };

@@ -8,15 +8,15 @@ export default function PostMemeButton() {
     <Tooltip color="black" label="Post a Meme">
       <ActionIcon
         color="violet.9"
-        mr="md"
         variant="filled"
         size="xl"
         radius="xl"
         aria-label="Post"
         style={{
-          position: "absolute",
+          position: "fixed",
           bottom: 20,
           right: 20,
+          zIndex: 100,
         }}
         onClick={openMeme}
       >

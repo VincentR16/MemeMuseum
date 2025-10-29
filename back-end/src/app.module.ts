@@ -38,7 +38,7 @@ import { TrendingModule } from './trendsApi/trends.module';
       throttlers: [
         {
           ttl: 30000,
-          limit: 5,
+          limit: 100,
         },
       ],
     }),
