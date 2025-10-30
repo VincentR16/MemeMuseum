@@ -13,6 +13,7 @@ import { UpdateMemeDto } from './dto/updateMeme.dto';
 import { PaginatedMemeResponseDto } from './dto/paginatedMemeResponse.dto';
 import { TrendingService } from 'src/trendsApi/trends.service';
 import { TagService } from 'src/tags/tags.service';
+import { Console } from 'console';
 
 @Injectable()
 export class MemeService {
@@ -55,19 +56,34 @@ export class MemeService {
   async getMemes(
     page: number,
     limit: number,
+    userId?: string,
   ): Promise<PaginatedMemeResponseDto> {
     const skip = (page - 1) * limit;
 
-    const [memes, totalItems] = await this.memeRepository.findAndCount({
-      relations: ['user', 'comments', 'tags'],
-      skip,
-      take: limit,
-      order: { createdAt: 'DESC' },
-    });
+    const queryBuilder = this.memeRepository
+      .createQueryBuilder('meme')
+      .leftJoinAndSelect('meme.user', 'user')
+      .leftJoinAndSelect('meme.comments', 'comments')
+      .leftJoinAndSelect('meme.tags', 'tags')
+      .skip(skip)
+      .take(limit)
+      .orderBy('meme.createdAt', 'DESC');
+
+    if (userId) {
+      queryBuilder.leftJoinAndSelect(
+        'meme.votes',
+        'userVote',
+        'userVote.userId = :userId',
+        { userId },
+      );
+    }
+
+    const [memes, totalItems] = await queryBuilder.getManyAndCount();
 
     const totalPages = Math.ceil(totalItems / limit);
     const hasNextPage = page < totalPages;
     const hasPreviousPage = page > 1;
+    console.log('meme vote', memes[0].votes, userId);
 
     return {
       memes,

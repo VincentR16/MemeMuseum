@@ -1,8 +1,6 @@
 import { createContext, useContext } from "react";
 import type { User } from "../types/User.type";
 
-
-
 type AuthContextType = {
   user: User | undefined;
   setUser: (obj: User| undefined) => void;

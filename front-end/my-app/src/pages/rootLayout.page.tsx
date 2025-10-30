@@ -1,9 +1,4 @@
-import {
-  AppShell,
-  Burger,
-  Group,
-
-} from "@mantine/core";
+import { AppShell, Burger, Group } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { Navbar } from "../components/navbar";
 import AuthModal from "../components/authModal";
@@ -12,10 +7,12 @@ import { Outlet } from "react-router-dom";
 import PostMemeButton from "../components/postMemeButton";
 import MemeModal from "../components/memeModal";
 import { useState } from "react";
+import { useModalContext } from "../context/modalContext";
 
 export default function RootLayout() {
   const [mobileOpened, { toggle: toggleMobile }] = useDisclosure();
   const [active, setActive] = useState("Archive");
+    const { memeOpened } = useModalContext();
 
   return (
     <AppShell
@@ -48,15 +45,18 @@ export default function RootLayout() {
       </AppShell.Navbar>
 
       <AppShell.Main>
+        {memeOpened && (
+          <MemeModal
+            setNavabar={setActive}
+            toggleMobile={toggleMobile}
+            mobileOpened={mobileOpened}
+          />
+        )}
+
         <Outlet />
         <PostMemeButton />
       </AppShell.Main>
-
-      <MemeModal
-        setNavabar={setActive}
-        toggleMobile={toggleMobile}
-        mobileOpened={mobileOpened}
-      />
+      
       <AuthModal />
       <LogoutModal />
     </AppShell>

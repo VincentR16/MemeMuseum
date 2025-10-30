@@ -1,7 +1,5 @@
 import { Navigate, Outlet } from "react-router-dom";
-import { AuthProvider } from "./context/authProvider";
 import { ModalProvider } from "./context/modalProvider";
-import InitialRedirect from "./utils/InitialRedirect";
 import RootLayout from "./pages/rootLayout.page";
 import ArchivePage from "./pages/archive.page";
 
@@ -9,16 +7,14 @@ export const routes = [
   {
     path: "/",
     element: (
-      <AuthProvider>
-        <ModalProvider>
-          <Outlet />
-        </ModalProvider>
-      </AuthProvider>
+      <ModalProvider>
+        <Outlet />
+      </ModalProvider>
     ),
     children: [
       {
         index: true,
-        element: <InitialRedirect />,
+        element: <Navigate to="/home/archive" replace />,
       },
       {
         path: "home",

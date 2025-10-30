@@ -18,11 +18,12 @@ export class AuthController {
     @Req() req: Request,
     @Body() _loginDto: LogInDto,
     @Res({ passthrough: true }) res: Response,
-  ) {
-    const { accessToken, refreshToken } = await this.authservice.login(req);
+  ): Promise<User> {
+    const { accessToken, refreshToken, user } =
+      await this.authservice.login(req);
     this.setAuthCookies(res, accessToken, refreshToken);
 
-    return { message: 'Login success' };
+    return user;
   }
 
   @Post('signup')

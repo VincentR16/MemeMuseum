@@ -11,6 +11,7 @@ export default function usePostMeme() {
     mutationFn: async (data: FormData) => {
       await postMemeApi(data);
       await queryClient.invalidateQueries({ queryKey: ["tags"] });
+      await queryClient.invalidateQueries({queryKey: ["meme"]})
     },
     onSuccess: () => {
       console.log("PostMeme success");

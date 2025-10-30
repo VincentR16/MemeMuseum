@@ -11,6 +11,7 @@ import classes from "./style/navbar.module.css";
 import { useModalContext } from "../context/modalContext";
 import MemeMuseumLogo from "./memMuseumLogo";
 import { useAuthContext } from "../context/authContext";
+import { useRequireAuth } from "../hook/useRequireAuth";
 
 const data = [
   { link: "", label: "Archive", icon: IconHistory },
@@ -26,6 +27,8 @@ interface NavbarProps {
 export function Navbar({ setActive, active }: NavbarProps) {
   const { isAuthenticated } = useAuthContext();
   const { openAuthModal, openLogout, openMeme } = useModalContext();
+    const requireAuth = useRequireAuth();
+  
 
   const links = data.map((item) => (
     <a
@@ -39,7 +42,9 @@ export function Navbar({ setActive, active }: NavbarProps) {
 
         switch (item.label) {
           case "Post a Meme":
-            openMeme();
+            requireAuth(() => {
+              openMeme();
+            });
             break;
         }
       }}

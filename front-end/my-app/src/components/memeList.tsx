@@ -32,7 +32,7 @@ export default function MemeList() {
           mt={isMobile ? 0 : "xs"}
           key={page.pagination.currentPage}
           align="center"
-          gap={isMobile ? 0 : "md"}
+          gap={isMobile ? 0 : "xs"}
           w="100%"
         >
           {page.memes.map((meme) => (

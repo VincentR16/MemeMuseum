@@ -1,4 +1,4 @@
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { logoutApi } from "../api/logout.api";
 import { useAuthContext } from "../context/authContext";
 import { notifications } from "@mantine/notifications";
@@ -7,13 +7,14 @@ import { IconCheck } from "@tabler/icons-react";
 
 export default function useLogout() {
   const { setIsAuthenticated, setUser } = useAuthContext();
+  const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: async () => {
       await logoutApi();
+      await queryClient.invalidateQueries({ queryKey: ["meme"] });
     },
     onSuccess: () => {
-      console.log("Logout success");
       setIsAuthenticated(false);
       setUser(undefined);
       notifications.show({

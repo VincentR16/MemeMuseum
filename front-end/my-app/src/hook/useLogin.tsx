@@ -1,4 +1,4 @@
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import type { LoginRequest } from "../types/LoginRequest.type";
 import { loginApi } from "../api/login.api";
 import { notifications } from "@mantine/notifications";
@@ -10,14 +10,18 @@ import { ThemeIcon } from "@mantine/core";
 export default function useLogin() {
   const { setUser, setLoading, setIsAuthenticated } = useAuthContext();
   const { closeAuthModal } = useModalContext();
+  const queryClient = useQueryClient();
+
   return useMutation({
     mutationFn: (request: LoginRequest) => loginApi(request),
 
-    onSuccess: (data) => {
+    onSuccess: async (data) => {
       setLoading(false);
       setIsAuthenticated(true);
       setUser(data);
-      console.log("Login success", data);
+
+      await queryClient.invalidateQueries({ queryKey: ["meme"] });
+
       notifications.show({
         title: "Login Success",
         message: "Welcome back to MemeMuseum",
@@ -30,6 +34,7 @@ export default function useLogin() {
         loading: false,
         autoClose: 3500,
       });
+
       closeAuthModal();
     },
 

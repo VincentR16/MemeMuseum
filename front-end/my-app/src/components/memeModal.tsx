@@ -10,7 +10,6 @@ import {
   Text,
   Loader,
   Center,
-  Space,
 } from "@mantine/core";
 import {
   IconPhoto,
@@ -77,7 +76,7 @@ export default function MemeModal({
 
   return (
     <Modal
-      size="55%"
+      size="45%"
       fullScreen={isMobile}
       radius="lg"
       opened={memeOpened}
@@ -94,6 +93,15 @@ export default function MemeModal({
       }
       centered
       withinPortal={true}
+      styles={{
+        body: {
+          maxHeight: isMobile ? "auto" : "75vh",
+          overflowY: "visible",
+        },
+        content: {
+          border: "1px solid #373a40",
+        },
+      }}
       closeButtonProps={{
         icon: (
           <ThemeIcon color="red.9" variant="light">
@@ -103,16 +111,14 @@ export default function MemeModal({
       }}
     >
       {isPending ? (
-        <Center h="50vh">
-          <Loader size="xl" color="violet" />
+        <Center h="40vh">
+          <Loader size="lg" color="violet" />
         </Center>
       ) : (
         <form onSubmit={handleSubmit}>
-          <Space h="xs"></Space>
-
-          <Stack gap="md">
+          <Stack gap="sm">
             <Dropzone
-              mt="xl"
+              mt="xs"
               onDrop={(files) => {
                 if (files.length > 0) {
                   form.setFieldValue("image", files[0]);
@@ -123,12 +129,12 @@ export default function MemeModal({
               style={{ cursor: "pointer" }}
             >
               {imagePreview ? (
-                <Group justify="center" gap="xl" mih={220}>
+                <Group justify="center" gap="xl" mih={180}>
                   <img
                     src={imagePreview}
                     alt="Preview"
                     style={{
-                      maxHeight: "300px",
+                      maxHeight: "250px",
                       maxWidth: "100%",
                       objectFit: "contain",
                       borderRadius: "8px",
@@ -138,8 +144,8 @@ export default function MemeModal({
               ) : (
                 <Group
                   justify="center"
-                  gap="xl"
-                  mih={220}
+                  gap="md"
+                  mih={180}
                   style={{ pointerEvents: "none" }}
                 >
                   <Dropzone.Accept>
@@ -165,7 +171,7 @@ export default function MemeModal({
                   </Dropzone.Idle>
 
                   <div>
-                    <Text size="xl" inline>
+                    <Text size="lg" inline>
                       Drag images here or click to select files
                     </Text>
                     <Text size="sm" c="dimmed" inline mt={7}>
@@ -177,25 +183,25 @@ export default function MemeModal({
             </Dropzone>
 
             <TextInput
-              size="md"
               label="Title"
               placeholder="Write the title"
               error={form.errors}
               withAsterisk
+              size="sm"
               {...form.getInputProps("title")}
             />
 
             <Textarea
-              size="md"
               label="Caption"
               placeholder="Describe your meme (optional)"
               minRows={2}
-              maxRows={5}
+              maxRows={3}
               autosize
+              size="sm"
               {...form.getInputProps("description")}
             />
+
             <TagsInput
-              size="md"
               label="Tags"
               placeholder="Select existing tags or type new ones"
               data={tags ?? []}
@@ -204,6 +210,7 @@ export default function MemeModal({
               clearable
               maxDropdownHeight={200}
               disabled={isLoadingTags}
+              size="sm"
               comboboxProps={{
                 withinPortal: false,
                 position: "top",
@@ -211,16 +218,21 @@ export default function MemeModal({
               }}
               {...form.getInputProps("tags")}
             />
-            <Space h="xs"></Space>
 
-            <Group justify="flex-end" mt="xl" mb="xs">
-              <Button variant="outline" color="gray" onClick={handleClose}>
+            <Group justify="flex-end" mt="xs">
+              <Button
+                variant="outline"
+                color="gray"
+                onClick={handleClose}
+                size="sm"
+              >
                 Cancel
               </Button>
               <Button
                 type="submit"
                 color="violet.9"
                 leftSection={<IconUpload size={16} />}
+                size="sm"
               >
                 Post
               </Button>

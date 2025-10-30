@@ -24,7 +24,7 @@ export default function AuthModal() {
         ></CustomTitle>
       }
       centered
-      size="xl"
+      size="lg"
       closeButtonProps={{
         icon: (
           <ThemeIcon color="red.9" variant="light">

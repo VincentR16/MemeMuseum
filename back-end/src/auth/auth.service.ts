@@ -65,7 +65,7 @@ export class AuthService {
 
   async login(
     req: Request,
-  ): Promise<{ accessToken: string; refreshToken: string }> {
+  ): Promise<{ accessToken: string; refreshToken: string; user: User }> {
     const user = req.user as User;
     if (!user) throw new InternalServerErrorException();
 
@@ -92,6 +92,7 @@ export class AuthService {
     return {
       accessToken,
       refreshToken,
+      user,
     };
   }
 

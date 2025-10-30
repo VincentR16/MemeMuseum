@@ -9,10 +9,20 @@ import {
   Paper,
   Flex,
   Center,
+  Divider,
 } from "@mantine/core";
-import { IconArrowBigDown, IconArrowBigUp } from "@tabler/icons-react";
+import {
+  IconArrowBigDown,
+  IconArrowBigDownFilled,
+  IconArrowBigUp,
+  IconArrowBigUpFilled,
+  IconMessageCircle,
+} from "@tabler/icons-react";
 import type { Meme } from "../types/Meme.type";
 import { useMediaQuery } from "@mantine/hooks";
+import { VoteType } from "../types/VoteTypesEnum.type";
+import { useDownvoteMeme, useUpvoteMeme } from "../hook/useVoteMeme";
+import { useRequireAuth } from "../hook/useRequireAuth";
 
 interface MemeCardProps {
   meme: Meme;
@@ -34,30 +44,31 @@ const MANTINE_COLORS = [
 ];
 
 const getColorFromId = (id: string): string => {
-  const hash = id
-    .split("")
-    .reduce((acc, char) => acc + char.charCodeAt(0), 0);
+  const hash = id.split("").reduce((acc, char) => acc + char.charCodeAt(0), 0);
   return MANTINE_COLORS[hash % MANTINE_COLORS.length];
 };
 
 export default function MemeCard({ meme }: MemeCardProps) {
   const isMobile = useMediaQuery("(max-width: 767px)");
-  
+  const userVote = meme.votes?.[0]?.voteType;
+  const upvoteMutation = useUpvoteMeme();
+  const downvoteMutation = useDownvoteMeme();
+  const requireAuth = useRequireAuth();
+
   return (
     <Card
       shadow="md"
       padding="xs"
-       w={{ base: "100%", xs: "90%", sm: "85%", md: 650 }}
-      maw={650}
+      w={{ base: "100%", xs: "90%", sm: "85%", md: "85%", xl: "80%" }}
       radius={isMobile ? 0 : "md"}
       withBorder
       style={{
         transition: "transform 0.2s ease, box-shadow 0.2s ease",
       }}
     >
-      <Flex 
+      <Flex
         direction="row"
-        justify="space-between" 
+        justify="space-between"
         mb="xs"
         gap="xs"
         wrap="nowrap"
@@ -83,15 +94,6 @@ export default function MemeCard({ meme }: MemeCardProps) {
             </Text>
           </Center>
         </Group>
-
-        <Paper radius="lg" p={3}>
-          <ActionIcon radius="lg" variant="subtle" color="gray" size="md">
-            <IconArrowBigUp size={18} />
-          </ActionIcon>
-          <ActionIcon radius="lg" variant="subtle" color="gray" size="md">
-            <IconArrowBigDown size={18} />
-          </ActionIcon>
-        </Paper>
       </Flex>
 
       <Text fw={600} fs={{ base: "md", sm: "lg" }} lineClamp={1}>
@@ -105,24 +107,71 @@ export default function MemeCard({ meme }: MemeCardProps) {
         <Paper p="xs" withBorder shadow="lg">
           <Image
             src={meme.cloudinaryImageUrl}
-            h={{ base: 300, xs: 350, sm: 400, md: 450 }}
+            h={{ base: 300, xs: 350, sm: 400, md: 450, xl: 650 }}
             fit="contain"
             alt={meme.title}
           />
         </Paper>
       </Card.Section>
-
-      <Group gap="xs" mt="md" mb="xs" wrap="wrap">
-        {meme.tags.map((tag) => (
-          <Badge 
-            key={tag.id} 
-            color={getColorFromId(tag.id)} 
-            variant="light"
-          >
-            {tag.name}
-          </Badge>
-        ))}
-      </Group>
+      <Flex direction={"row"} mt={"md"}>
+        <Group gap="xs" wrap="wrap">
+          {meme.tags.map((tag) => (
+            <Badge key={tag.id} color={getColorFromId(tag.id)} variant="light">
+              {tag.name}
+            </Badge>
+          ))}
+        </Group>
+        <Center ml={"auto"}>
+          <Paper radius="lg" p={3}>
+            <Flex direction={"row"}>
+              <ActionIcon
+                onClick={() => {
+                  requireAuth(() => {
+                    upvoteMutation.mutate(meme.id);
+                  });
+                }}
+                radius="lg"
+                variant="subtle"
+                color="gray"
+                size="md"
+              >
+                {userVote === VoteType.VOTEUP ? (
+                  <IconArrowBigUpFilled size={18} />
+                ) : (
+                  <IconArrowBigUp size={18} />
+                )}
+              </ActionIcon>
+              <ActionIcon
+                onClick={() => {
+                  requireAuth(() => {
+                    downvoteMutation.mutate(meme.id);
+                  });
+                }}
+                radius="lg"
+                variant="subtle"
+                color="gray"
+                size="md"
+              >
+                {userVote === VoteType.VOTEDOWN ? (
+                  <IconArrowBigDownFilled size={18} />
+                ) : (
+                  <IconArrowBigDown size={18} />
+                )}
+              </ActionIcon>
+              <Divider orientation="vertical"></Divider>
+              <ActionIcon
+                ml={1}
+                radius="lg"
+                variant="subtle"
+                color="gray"
+                size="md"
+              >
+                <IconMessageCircle size={18} />
+              </ActionIcon>
+            </Flex>
+          </Paper>
+        </Center>
+      </Flex>
     </Card>
   );
 }

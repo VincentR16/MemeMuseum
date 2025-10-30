@@ -2,9 +2,12 @@ import { useState, type ReactNode } from "react";
 import type { User } from "../types/User.type";
 import { AuthContext } from "./authContext";
 
-
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [user, setUser] = useState<User | undefined>();
+  const [user, setUser] = useState<User | undefined>(() => {
+    const saved = localStorage.getItem("user");
+    return saved ? JSON.parse(saved) : undefined;
+  });
+
   const [isAuthenticated, setIsAuthenticatedState] = useState<boolean>(() => {
     const saved = localStorage.getItem("isAuthenticated");
     return saved === "true";

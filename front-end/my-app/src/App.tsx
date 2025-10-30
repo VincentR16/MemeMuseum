@@ -1,16 +1,18 @@
 import "@mantine/core/styles.css";
 import "@mantine/notifications/styles.css";
-import '@mantine/dates/styles.css';
+import "@mantine/dates/styles.css";
 import { createTheme, MantineProvider } from "@mantine/core";
 import { Notifications } from "@mantine/notifications";
 import { BrowserRouter as Router, useRoutes } from "react-router-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { routes } from "./routes";
+import { AuthProvider } from "./context/authProvider";
+import usePersistentLogin from "./hook/usePersistentLogin";
 
 const theme = createTheme({
   colors: {
     dark: [
-      "#C1C2C5", 
+      "#C1C2C5",
       "#A6A7AB",
       "#909296",
       "#5C5F66",
@@ -29,18 +31,28 @@ const Component = () => {
   return element;
 };
 
+function AppContent() {
+  usePersistentLogin();
+
+  return (
+    <>
+      <Notifications />
+      <Router>
+        <Component />
+      </Router>
+    </>
+  );
+}
 const queryClient = new QueryClient();
 
 export default function App() {
   return (
     <MantineProvider theme={theme} defaultColorScheme="dark">
       <QueryClientProvider client={queryClient}>
-        <Notifications />
-        <Router>
-          <Component />
-        </Router>
+        <AuthProvider>
+            <AppContent />
+        </AuthProvider>
       </QueryClientProvider>
     </MantineProvider>
   );
 }
-

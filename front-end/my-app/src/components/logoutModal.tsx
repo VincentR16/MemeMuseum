@@ -36,12 +36,12 @@ export default function LogoutModal() {
           variant="default"
           onClick={() => {
             logout.mutate();
-            close();
+            closeLogout();
           }}
         >
           Confirm
         </Button>
-        <Button color="red" onClick={close}>
+        <Button color="red" onClick={closeLogout}>
           Cancell
         </Button>
       </Group>
