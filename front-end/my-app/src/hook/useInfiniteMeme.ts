@@ -1,6 +1,6 @@
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { useAuthContext } from "../context/authContext";
-import { getMemeApi } from "../api/getMeme.api";
+import { getMemesApi } from "../api/getMemes.api";
 
 export default function useInfiniteMeme() {
   const { user } = useAuthContext();
@@ -8,7 +8,7 @@ export default function useInfiniteMeme() {
   return useInfiniteQuery({
     queryKey: ["meme", user?.id],
     queryFn: ({ pageParam }) => {
-      return getMemeApi(pageParam, user?.id);
+      return getMemesApi(pageParam, user?.id);
     },
     initialPageParam: 1,
     getNextPageParam: (lastPage) => {

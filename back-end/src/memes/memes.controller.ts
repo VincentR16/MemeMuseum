@@ -65,9 +65,11 @@ export class MemesController {
   }
 
   @Get(':id')
-  @UseGuards(JwtAuthGuard)
-  getMeme(@Param('id') id: string): Promise<Meme> {
-    return this.memeService.get(id);
+  getMeme(
+    @Param('id') id: string,
+    @Query('userId') userId?: string,
+  ): Promise<Meme> {
+    return this.memeService.get(id, userId);
   }
 
   @Delete(':id')

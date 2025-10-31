@@ -147,13 +147,30 @@ export class MemeService {
   //! da continuare!! vedere il caso in cui non ci siano meme of the day
   //todo: ricorda questo passaggio
 
-  async get(id: string): Promise<Meme> {
-    const result = await this.memeRepository.findOne({
-      where: { id },
-      relations: ['user', 'comments'],
-    });
-    if (!result) throw new NotFoundException('Meme not found');
-    return result;
+  async get(id: string, userId?: string): Promise<Meme> {
+    const queryBuilder = this.memeRepository
+      .createQueryBuilder('meme')
+      .leftJoinAndSelect('meme.user', 'user')
+      .leftJoinAndSelect('meme.comments', 'comments')
+      .leftJoinAndSelect('meme.tags', 'tags')
+      .where('meme.id = :id', { id });
+
+    if (userId) {
+      queryBuilder.leftJoinAndSelect(
+        'meme.votes',
+        'userVote', // ✅ Stesso alias di getMemes
+        'userVote.userId = :userId',
+        { userId },
+      );
+    }
+
+    const meme = await queryBuilder.getOne();
+
+    if (!meme) {
+      throw new NotFoundException('Meme not found');
+    }
+
+    return meme;
   }
 
   async delete(id: string, userId: string): Promise<void> {

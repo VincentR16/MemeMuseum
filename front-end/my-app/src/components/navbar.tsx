@@ -12,6 +12,7 @@ import { useModalContext } from "../context/modalContext";
 import MemeMuseumLogo from "./memMuseumLogo";
 import { useAuthContext } from "../context/authContext";
 import { useRequireAuth } from "../hook/useRequireAuth";
+import { useNavigate } from "react-router-dom";
 
 const data = [
   { link: "", label: "Archive", icon: IconHistory },
@@ -27,8 +28,8 @@ interface NavbarProps {
 export function Navbar({ setActive, active }: NavbarProps) {
   const { isAuthenticated } = useAuthContext();
   const { openAuthModal, openLogout, openMeme } = useModalContext();
-    const requireAuth = useRequireAuth();
-  
+  const requireAuth = useRequireAuth();
+  const navigate = useNavigate();
 
   const links = data.map((item) => (
     <a
@@ -45,6 +46,10 @@ export function Navbar({ setActive, active }: NavbarProps) {
             requireAuth(() => {
               openMeme();
             });
+            break;
+
+          case "Archive":
+            navigate("/home/archive");
             break;
         }
       }}

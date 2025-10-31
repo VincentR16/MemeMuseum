@@ -45,5 +45,5 @@ export default function usePersistentLogin() {
     };
 
     checkLogin();
-  }, []);
+  }, [setIsAuthenticated, setUser, setLoading]);
 }

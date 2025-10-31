@@ -1,7 +1,7 @@
 import type { PaginatedMeme } from "../types/paginatedMeme.type";
 import api from "./axios";
 
-export async function getMemeApi(
+export async function getMemesApi(
   page: number,
   userId?: string
 ): Promise<PaginatedMeme> {

@@ -1,4 +1,4 @@
-import { Flex, Loader, Stack, Text } from "@mantine/core";
+import { Center, Flex, Loader, Stack, Text } from "@mantine/core";
 import { useInViewport, useMediaQuery } from "@mantine/hooks";
 import useInfiniteMeme from "../hook/useInfiniteMeme";
 import { useEffect } from "react";
@@ -22,7 +22,15 @@ export default function MemeList() {
     }
   }, [inViewport, hasNextPage, isFetchingNextPage, fetchNextPage]);
 
-  if (status === "pending") return <Loader />;
+  if (status === "pending")
+    return (
+      <Flex w={"100%"} h={"100%"}>
+        <Center>
+          <Loader />
+        </Center>
+      </Flex>
+    );
+
   if (status === "error") return <Text c="red">Errore: {error.message}</Text>;
 
   return (
@@ -36,7 +44,7 @@ export default function MemeList() {
           w="100%"
         >
           {page.memes.map((meme) => (
-            <MemeCard meme={meme} key={meme.id} />
+            <MemeCard meme={meme} key={meme.id} isMemePage={false} />
           ))}
         </Stack>
       ))}

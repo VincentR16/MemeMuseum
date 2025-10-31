@@ -2,6 +2,7 @@ import { Navigate, Outlet } from "react-router-dom";
 import { ModalProvider } from "./context/modalProvider";
 import RootLayout from "./pages/rootLayout.page";
 import ArchivePage from "./pages/archive.page";
+import MemePage from "./pages/meme.page";
 
 export const routes = [
   {
@@ -27,6 +28,10 @@ export const routes = [
           {
             path: "archive",
             element: <ArchivePage />,
+          },
+          {
+            path: "archive/:id", 
+            element: <MemePage />,
           },
         ],
       },
