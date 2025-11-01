@@ -1,3 +1,5 @@
+// Questo componente e' stato preso dal sito https://www.reactbits.dev/
+
 import { useEffect, useState, useRef } from "react";
 import { motion, type HTMLMotionProps } from "motion/react";
 
