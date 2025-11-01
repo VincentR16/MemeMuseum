@@ -12,7 +12,30 @@ export class TrendingService {
 
   constructor(private readonly configService: ConfigService) {}
 
-  // @Cron('0 */12 * * *')
+  private capitalizeAfterSpaces(text: string): string {
+    let result = '';
+    let capitalizeNext = true;
+
+    for (let i = 0; i < text.length; i++) {
+      const char = text[i];
+
+      if (char === ' ') {
+        capitalizeNext = true;
+        continue; // Salta lo spazio (non lo aggiunge)
+      }
+
+      if (capitalizeNext) {
+        result += char.toUpperCase();
+        capitalizeNext = false;
+      } else {
+        result += char.toLowerCase();
+      }
+    }
+
+    return result;
+  }
+
+  @Cron('0 */12 * * *')
   async updateDailyTrending(): Promise<void> {
     console.log('Updating daily trending keywords...');
 
@@ -22,8 +45,6 @@ export class TrendingService {
       if (!apiKey) {
         throw new Error('SERPAPI_KEY is not configured');
       }
-
-      // Usa la nuova API senza il parametro "frequency"
       const response = (await getJson({
         engine: 'google_trends_trending_now',
         geo: 'IT',
@@ -33,10 +54,11 @@ export class TrendingService {
       })) as SerpApiTrendingResponse;
 
       if (response.trending_searches && response.trending_searches.length > 0) {
-        // Estrai le prime 5 query dai trending searches
         this.dailyTrendingKeywords = response.trending_searches
           .slice(0, 5)
-          .map((search: TrendingSearch) => search.query);
+          .map((search: TrendingSearch) =>
+            this.capitalizeAfterSpaces(search.query),
+          );
 
         this.lastUpdate = new Date();
 
@@ -53,10 +75,10 @@ export class TrendingService {
     }
   }
 
-  /* async onModuleInit(): Promise<void> {
+  async onModuleInit(): Promise<void> {
     console.log('TrendingService initialized. Fetching initial data...');
     await this.updateDailyTrending();
-  } */
+  }
 
   getDailyKeywords(): string[] {
     return this.dailyTrendingKeywords;
@@ -65,8 +87,6 @@ export class TrendingService {
   getLastUpdate(): Date | null {
     return this.lastUpdate;
   }
-
-  // Metodo extra: ottieni solo trending attivi
   async getActiveTrendingKeywords(): Promise<string[]> {
     try {
       const apiKey = this.configService.get<string>('SERPAPI_KEY');
@@ -84,7 +104,6 @@ export class TrendingService {
       })) as SerpApiTrendingResponse;
 
       if (response.trending_searches) {
-        // Filtra solo i trending attivi
         return response.trending_searches
           .filter((search: TrendingSearch) => search.active)
           .slice(0, 5)

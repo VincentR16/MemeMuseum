@@ -18,26 +18,85 @@ import {
 import { useMediaQuery } from "@mantine/hooks";
 import { useState, useEffect } from "react";
 import { DatePicker } from "@mantine/dates";
+import useInfiniteMeme from "../hook/useInfiniteMeme";
+import useInfiniteSearchMeme from "../hook/useInfiniteSearchMeme";
+import { useSearchParams } from "react-router-dom";
 
 export default function ArchivePage() {
   const isMobile = useMediaQuery("(max-width: 767px)");
+  const [searchParams, setSearchParams] = useSearchParams();
+
   const [searchTags, setSearchTags] = useState("");
-  const [activeSearch, setActiveSearch] = useState("");
   const [value, setValue] = useState<[string | null, string | null]>([
     null,
     null,
   ]);
   const [checked, setChecked] = useState(false);
 
+  const sortBy = checked ? "votes" : "date";
+  const activeSearch = searchParams.get("tags") || "";
+
+  const normalQuery = useInfiniteMeme({ sortBy });
+  const searchQuery = useInfiniteSearchMeme({
+    tags: activeSearch,
+    dateFrom: value[0] ? new Date(value[0]) : undefined,
+    dateTo: value[1] ? new Date(value[1]) : undefined,
+    sortBy,
+  });
+
+  const hasSearchParams = activeSearch || value[0] || value[1];
+  const selectedQuery = hasSearchParams ? searchQuery : normalQuery;
+
   const handleSearch = () => {
-    setActiveSearch(searchTags);
+    const params: Record<string, string> = {};
+
+    if (searchTags.trim()) {
+      params.tags = searchTags.trim();
+    }
+    if (value[0]) {
+      params.dateFrom = value[0];
+    }
+    if (value[1]) {
+      params.dateTo = value[1];
+    }
+
+    setSearchParams(params);
   };
 
   useEffect(() => {
-    if (!searchTags.trim().length) {
-      setActiveSearch("");
+    const params: Record<string, string> = {};
+
+    if (activeSearch) {
+      params.tags = activeSearch;
     }
-  }, [searchTags]);
+    if (value[0]) {
+      params.dateFrom = value[0];
+    }
+    if (value[1]) {
+      params.dateTo = value[1];
+    }
+
+    if (Object.keys(params).length > 0) {
+      setSearchParams(params);
+    } else if (!activeSearch && !value[0] && !value[1]) {
+      setSearchParams({});
+    }
+  }, [value, setSearchParams, activeSearch]);
+
+  useEffect(() => {
+    if (searchTags.trim() === "" && activeSearch) {
+      const params: Record<string, string> = {};
+
+      if (value[0]) {
+        params.dateFrom = value[0];
+      }
+      if (value[1]) {
+        params.dateTo = value[1];
+      }
+
+      setSearchParams(params);
+    }
+  }, [searchTags, activeSearch, value, setSearchParams]);
 
   return (
     <>
@@ -69,6 +128,11 @@ export default function ArchivePage() {
             placeholder="Search tags"
             value={searchTags}
             onChange={(event) => setSearchTags(event.currentTarget.value)}
+            onKeyDown={(event) => {
+              if (event.key === "Enter") {
+                handleSearch();
+              }
+            }}
             rightSectionWidth={80}
             leftSection={<IconSearch size={18} stroke={1.5} />}
             rightSection={
@@ -89,7 +153,6 @@ export default function ArchivePage() {
                       type="range"
                       value={value}
                       onChange={setValue}
-                      numberOfColumns={isMobile ? 1 : 2}
                     />
                   </Menu.Dropdown>
                 </Menu>
@@ -134,12 +197,7 @@ export default function ArchivePage() {
           </Tooltip>
         </Flex>
       </Box>
-      <MemeList
-        filterbyRate={checked}
-        dateFrom={value[0] ? new Date(value[0]) : null}
-        dateTo={value[1] ? new Date(value[1]) : null}
-        searchTags={activeSearch}
-      ></MemeList>
+      <MemeList query={selectedQuery}></MemeList>
     </>
   );
 }

@@ -20,7 +20,7 @@ export default function useLogin() {
       setIsAuthenticated(true);
       setUser(data);
 
-      await queryClient.invalidateQueries({ queryKey: ["meme"] });
+      await queryClient.invalidateQueries({ queryKey: ["meme","daily"] });
 
       notifications.show({
         title: "Login Success",

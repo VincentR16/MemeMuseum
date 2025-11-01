@@ -12,7 +12,7 @@ import { useModalContext } from "../context/modalContext";
 export default function RootLayout() {
   const [mobileOpened, { toggle: toggleMobile }] = useDisclosure();
   const [active, setActive] = useState("Archive");
-    const { memeOpened } = useModalContext();
+  const { memeOpened } = useModalContext();
 
   return (
     <AppShell
@@ -53,10 +53,10 @@ export default function RootLayout() {
           />
         )}
 
-        <Outlet />
+        <Outlet context={{ setActive }} />
         <PostMemeButton />
       </AppShell.Main>
-      
+
       <AuthModal />
       <LogoutModal />
     </AppShell>

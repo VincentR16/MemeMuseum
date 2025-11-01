@@ -1,17 +1,26 @@
 import { Avatar, Divider, Flex, Loader, Text } from "@mantine/core";
 import MemeCard from "../components/memeCard";
-import { useParams } from "react-router-dom";
+import { useOutletContext, useParams } from "react-router-dom";
 import { useGetMeme } from "../hook/useGetMeme";
 import { useAuthContext } from "../context/authContext";
 import { getColorFromId } from "../utils/getColor";
 import { FloatingLabelInput } from "../components/floatingLabel";
 import CommentList from "../components/commentList";
+import { useEffect } from "react";
 
+type OutletContextType = {
+  setActive: React.Dispatch<React.SetStateAction<string>>;
+};
 
 export default function MemePage() {
+  const { setActive } = useOutletContext<OutletContextType>();
   const { user } = useAuthContext();
   const { id } = useParams<{ id: string }>();
   const { isError, isLoading, data, error } = useGetMeme(id!, user?.id);
+
+  useEffect(() => {
+    setActive("Archive");
+  }, [setActive]);
 
   if (isLoading)
     return (

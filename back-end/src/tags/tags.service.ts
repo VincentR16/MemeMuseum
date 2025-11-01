@@ -6,12 +6,14 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { Tag } from './tag.entity';
 import { Repository } from 'typeorm';
+import { TrendingService } from 'src/trendsApi/trends.service';
 
 @Injectable()
 export class TagService {
   constructor(
     @InjectRepository(Tag)
     private readonly tagRepository: Repository<Tag>,
+    private readonly trendingService: TrendingService,
   ) {}
 
   async findOrCreateTags(tagNames: string[]): Promise<Tag[]> {
@@ -78,5 +80,9 @@ export class TagService {
 
     if (tag.count !== 0) throw new BadRequestException('Tag count is not 0');
     await this.tagRepository.remove(tag);
+  }
+
+  getDailyTags(): string[] {
+    return this.trendingService.getDailyKeywords();
   }
 }

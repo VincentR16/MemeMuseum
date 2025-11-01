@@ -29,4 +29,9 @@ export class TagController {
   async delete(@Param('name') name: string) {
     await this.tagService.delete(name);
   }
+
+  @Get('tags-of-the-day')
+  getDailyTags(): string[] {
+    return this.tagService.getDailyTags();
+  }
 }

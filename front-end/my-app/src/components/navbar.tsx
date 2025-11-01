@@ -1,6 +1,5 @@
 import {
   IconCalendarEvent,
-  IconCircleDashedPlus,
   IconHistory,
   IconLogin,
   IconLogout,
@@ -17,7 +16,6 @@ import { useNavigate } from "react-router-dom";
 const data = [
   { link: "", label: "Archive", icon: IconHistory },
   { link: "", label: "Memes of the day", icon: IconCalendarEvent },
-  { link: "", label: "Post a Meme", icon: IconCircleDashedPlus },
   { link: "", label: "Profile", icon: IconUserCircle },
 ];
 
@@ -50,6 +48,10 @@ export function Navbar({ setActive, active }: NavbarProps) {
 
           case "Archive":
             navigate("/home/archive");
+            break;
+
+          case "Memes of the day":
+            navigate("/home/meme-of-the-day");
             break;
         }
       }}

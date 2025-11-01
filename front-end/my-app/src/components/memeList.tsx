@@ -1,35 +1,21 @@
 import { Divider, Flex, Loader, Stack, Text } from "@mantine/core";
 import { useInViewport } from "@mantine/hooks";
-import useInfiniteMeme from "../hook/useInfiniteMeme";
-import useInfiniteSearchMeme from "../hook/useInfiniteSearchMeme";
 import { useEffect } from "react";
 import MemeCard from "./memeCard";
+import type { InfiniteData, UseInfiniteQueryResult } from "@tanstack/react-query";
+import type { PaginatedMeme } from "../types/paginatedMeme.type";
 
 interface MemeListProps {
-  searchTags?: string;
-  dateFrom?: Date | null;
-  dateTo?: Date | null;
-  filterbyRate: boolean;
+  query: UseInfiniteQueryResult<InfiniteData<PaginatedMeme, unknown>, Error>;
+  emptyMessage?: string;
 }
 
 export default function MemeList({
-  searchTags = "",
-  dateFrom = null,
-  dateTo = null,
-  filterbyRate,
+  query,
+  emptyMessage = "No meme found...",
 }: MemeListProps) {
   const { ref, inViewport } = useInViewport();
-  const sortBy = filterbyRate ? "votes" : "date";
 
-  const normalQuery = useInfiniteMeme({ sortBy });
-  const searchQuery = useInfiniteSearchMeme({
-    tags: searchTags,
-    dateFrom: dateFrom || undefined,
-    dateTo: dateTo || undefined,
-    sortBy,
-  });
-
-  const hasSearchParams = searchTags.trim().length > 0 || dateFrom || dateTo;
   const {
     data,
     status,
@@ -37,7 +23,7 @@ export default function MemeList({
     fetchNextPage,
     isFetchingNextPage,
     hasNextPage,
-  } = hasSearchParams ? searchQuery : normalQuery;
+  } = query;
 
   useEffect(() => {
     if (inViewport && hasNextPage && !isFetchingNextPage) {
@@ -63,7 +49,7 @@ export default function MemeList({
         justify={"center"}
         direction={"row"}
       >
-        No meme found...
+        {emptyMessage}
       </Flex>
     );
 

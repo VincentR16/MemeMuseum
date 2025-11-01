@@ -183,52 +183,62 @@ export class MemeService {
   async getMemeOftheday(
     page: number,
     limit: number,
+    userId?: string,
   ): Promise<PaginatedMemeResponseDto> {
     const skip = (page - 1) * limit;
 
     const trends = this.trendingService.getDailyKeywords();
 
+    if (!trends || trends.length === 0) {
+      throw new Error('Nessun trend disponibile per oggi');
+    }
+
     const queryBuilder = this.memeRepository
       .createQueryBuilder('meme')
       .leftJoinAndSelect('meme.user', 'user')
-      .leftJoinAndSelect('meme.comments', 'comments');
+      .leftJoinAndSelect('meme.comments', 'comments')
+      .leftJoinAndSelect('meme.tags', 'tags');
 
-    const conditions = trends
-      .map((index) => {
-        return `(
-    LOWER(meme.title) LIKE :trend${index} OR 
-    LOWER(meme.description) LIKE :trend${index} OR
-    LOWER(meme.tags) LIKE :trend${index}
-  )`;
-      })
+    if (userId) {
+      queryBuilder.leftJoinAndSelect(
+        'meme.votes',
+        'userVote',
+        'userVote.userId = :userId',
+        { userId },
+      );
+    }
+
+    const orConditions = trends
+      .map((_, index) => `LOWER(tags.name) = :tagName${index}`)
       .join(' OR ');
 
-    const parameters: Record<string, string> = {};
-    trends.forEach((trend, index) => {
-      parameters[`trend${index}`] = `%${trend.toLowerCase()}%`;
-    });
+    const parameters = trends.reduce((acc, tagName, index) => {
+      acc[`tagName${index}`] = tagName.toLowerCase();
+      return acc;
+    }, {});
 
-    queryBuilder.where(conditions, parameters);
-    queryBuilder.orderBy('meme.createdAt', 'DESC').skip(skip).take(limit);
+    queryBuilder.andWhere(`(${orConditions})`, parameters);
 
-    const [memes, totalItems] = await queryBuilder.getManyAndCount();
+    queryBuilder.orderBy('meme.createdAt', 'DESC');
+
+    const [memes, totalItems] = await queryBuilder
+      .skip(skip)
+      .take(limit)
+      .getManyAndCount();
+
     const totalPages = Math.ceil(totalItems / limit);
-    const hasNextPage = page < totalPages;
-    const hasPreviousPage = page > 1;
 
     return {
       memes,
       pagination: {
         currentPage: page,
         totalPages,
-        hasNextPage,
-        hasPreviousPage,
+        hasNextPage: page < totalPages,
+        hasPreviousPage: page > 1,
         itemsPerPage: limit,
       },
     };
   }
-  //! da continuare!! vedere il caso in cui non ci siano meme of the day
-  //todo: ricorda questo passaggio
 
   async get(id: string, userId?: string): Promise<Meme> {
     const queryBuilder = this.memeRepository

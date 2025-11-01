@@ -4,7 +4,7 @@ import api from "./axios";
 interface SearchMemesParams {
   page: number;
   limit?: number;
-  tags?: string; // Stringa diretta, non array
+  tags?: string; 
   userId?: string;
   dateFrom?: Date;
   dateTo?: Date;

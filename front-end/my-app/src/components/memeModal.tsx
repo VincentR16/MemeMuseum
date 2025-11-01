@@ -32,11 +32,7 @@ interface MemeProps {
   mobileOpened: boolean;
 }
 
-export default function MemeModal({
-  setNavabar,
-  mobileOpened,
-  toggleMobile,
-}: MemeProps) {
+export default function MemeModal({ mobileOpened, toggleMobile }: MemeProps) {
   const { memeOpened, closeMeme } = useModalContext();
   const form = useMemeForm();
   const { data: tags, isLoading: isLoadingTags } = useTags();
@@ -49,7 +45,6 @@ export default function MemeModal({
   }, [form.values.image]);
 
   function handleClose() {
-    setNavabar("Archive");
     closeMeme();
     if (isMobile && mobileOpened) {
       toggleMobile();

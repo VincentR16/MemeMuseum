@@ -3,6 +3,7 @@ import { ModalProvider } from "./context/modalProvider";
 import RootLayout from "./pages/rootLayout.page";
 import ArchivePage from "./pages/archive.page";
 import MemePage from "./pages/meme.page";
+import MemesOfTheDayPage from "./pages/memeDay.page";
 
 export const routes = [
   {
@@ -30,8 +31,12 @@ export const routes = [
             element: <ArchivePage />,
           },
           {
-            path: "archive/:id", 
+            path: "archive/:id",
             element: <MemePage />,
+          },
+          {
+            path: "meme-of-the-day",
+            element: <MemesOfTheDayPage />,
           },
         ],
       },
