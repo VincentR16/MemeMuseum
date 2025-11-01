@@ -1,8 +1,11 @@
 import { Divider, Flex, Loader, Stack, Text } from "@mantine/core";
 import { useInViewport } from "@mantine/hooks";
-import { useEffect } from "react";
+import { Fragment, useEffect } from "react";
 import MemeCard from "./memeCard";
-import type { InfiniteData, UseInfiniteQueryResult } from "@tanstack/react-query";
+import type {
+  InfiniteData,
+  UseInfiniteQueryResult,
+} from "@tanstack/react-query";
 import type { PaginatedMeme } from "../types/paginatedMeme.type";
 
 interface MemeListProps {
@@ -64,10 +67,10 @@ export default function MemeList({
           w="100%"
         >
           {page.memes.map((meme) => (
-            <>
+            <Fragment key={meme.id}>
               <MemeCard meme={meme} key={meme.id} isMemePage={false} />
               <Divider mb={3} mt={3} w={"100%"}></Divider>
-            </>
+            </Fragment>
           ))}
         </Stack>
       ))}
