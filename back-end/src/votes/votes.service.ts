@@ -32,7 +32,7 @@ export class VoteService {
       where: { memeId, userId },
     });
 
-    const oldVoteType = vote?.voteType; // Salva il voto precedente
+    const oldVoteType = vote?.voteType;
 
     if (!vote) {
       vote = await this.create(memeId, userId);
@@ -40,7 +40,6 @@ export class VoteService {
 
     vote.voteType = voteType;
 
-    // Aggiorna il conteggio PRIMA di salvare il nuovo voto
     await this.updateMemeVoteCount(memeId, oldVoteType, voteType);
 
     return await this.voteRepository.save(vote);
@@ -60,14 +59,12 @@ export class VoteService {
     const meme = await this.memeRepository.findOne({ where: { id: memeId } });
     if (!meme) throw new NotFoundException('Meme not found');
 
-    // Rimuovi il voto precedente (se esiste)
     if (oldVoteType === VoteType.VOTEUP) {
       meme.votesCount -= 1;
     } else if (oldVoteType === VoteType.VOTEDOWN) {
       meme.votesCount += 1;
     }
 
-    // Aggiungi il nuovo voto
     if (newVoteType === VoteType.VOTEUP) {
       meme.votesCount += 1;
     } else if (newVoteType === VoteType.VOTEDOWN) {

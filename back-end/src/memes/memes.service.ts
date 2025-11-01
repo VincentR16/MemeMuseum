@@ -87,7 +87,6 @@ export class MemeService {
       );
     }
 
-    // AND logic: il meme deve avere TUTTI i tag
     if (hasTagSearch) {
       tagNames.forEach((tagName, index) => {
         queryBuilder.innerJoin(

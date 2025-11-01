@@ -21,7 +21,7 @@ export class TrendingService {
 
       if (char === ' ') {
         capitalizeNext = true;
-        continue; // Salta lo spazio (non lo aggiunge)
+        continue;
       }
 
       if (capitalizeNext) {

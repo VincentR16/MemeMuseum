@@ -1,4 +1,3 @@
-// src/votes/vote.module.ts
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Vote } from './vote.entity';

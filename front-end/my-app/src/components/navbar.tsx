@@ -1,3 +1,4 @@
+// questo componente e stato preso e modificato dal sito Mantien UI components
 import {
   IconCalendarEvent,
   IconHistory,

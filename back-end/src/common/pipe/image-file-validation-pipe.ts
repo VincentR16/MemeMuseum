@@ -1,4 +1,3 @@
-// src/common/pipes/image-file-validation.pipe.ts
 import { Injectable } from '@nestjs/common';
 import {
   ParseFilePipe,
