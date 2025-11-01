@@ -2,13 +2,16 @@ import { useInfiniteQuery } from "@tanstack/react-query";
 import { useAuthContext } from "../context/authContext";
 import { getMemesApi } from "../api/getMemes.api";
 
-export default function useInfiniteMeme() {
+interface UseInfiniteMemeParams {
+  sortBy?: "date" | "votes";
+}
+export default function useInfiniteMeme({ sortBy }: UseInfiniteMemeParams) {
   const { user } = useAuthContext();
 
   return useInfiniteQuery({
-    queryKey: ["meme", user?.id],
+    queryKey: ["meme", user?.id, sortBy],
     queryFn: ({ pageParam }) => {
-      return getMemesApi(pageParam, user?.id);
+      return getMemesApi(pageParam, user?.id, sortBy);
     },
     initialPageParam: 1,
     getNextPageParam: (lastPage) => {

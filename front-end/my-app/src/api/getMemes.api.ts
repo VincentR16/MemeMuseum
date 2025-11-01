@@ -3,11 +3,13 @@ import api from "./axios";
 
 export async function getMemesApi(
   page: number,
-  userId?: string
+  userId?: string,
+  sortBy: "date" | "votes" = "date"
 ): Promise<PaginatedMeme> {
   const params = new URLSearchParams({
     page: page.toString(),
     limit: "10",
+    sortBy: sortBy,
   });
 
   if (userId) {

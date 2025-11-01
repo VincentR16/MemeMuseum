@@ -13,9 +13,14 @@ import { useRequireAuth } from "../hook/useRequireAuth";
 interface MemeButtonsProps {
   memeId: string;
   userVote: VoteType;
+  isMemePage: boolean;
 }
 
-export default function MemeButtons({ memeId, userVote }: MemeButtonsProps) {
+export default function MemeButtons({
+  memeId,
+  userVote,
+  isMemePage,
+}: MemeButtonsProps) {
   const upvoteMutation = useUpvoteMeme();
   const downvoteMutation = useDownvoteMeme();
   const requireAuth = useRequireAuth();
@@ -60,16 +65,20 @@ export default function MemeButtons({ memeId, userVote }: MemeButtonsProps) {
               <IconArrowBigDown size={18} />
             )}
           </ActionIcon>
-          <Divider orientation="vertical"></Divider>
-          <ActionIcon
-            ml={1}
-            radius="lg"
-            variant="subtle"
-            color="gray"
-            size="md"
-          >
-            <IconMessageCircle size={18} />
-          </ActionIcon>
+          {!isMemePage && (
+            <>
+              <Divider orientation="vertical"></Divider>
+              <ActionIcon
+                ml={1}
+                radius="lg"
+                variant="subtle"
+                color="gray"
+                size="md"
+              >
+                <IconMessageCircle size={18} />
+              </ActionIcon>
+            </>
+          )}
         </Flex>
       </Paper>
     </Center>

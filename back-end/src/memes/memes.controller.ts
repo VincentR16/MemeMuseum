@@ -60,8 +60,37 @@ export class MemesController {
     @Query('page') page: number,
     @Query('limit') limit: number,
     @Query('userId') userId?: string,
+    @Query('sortBy') sortBy?: 'date' | 'votes',
   ): Promise<PaginatedMemeResponseDto> {
-    return this.memeService.getMemes(page, limit, userId);
+    return this.memeService.getMemes(page, limit, userId, sortBy);
+  }
+
+  @Get('search')
+  @UseGuards(ThrottlerGuard)
+  searchMemesByTags(
+    @Query('tags') tags: string,
+    @Query('page') page: number,
+    @Query('limit') limit: number,
+    @Query('userId') userId?: string,
+    @Query('dateFrom') dateFrom?: string,
+    @Query('dateTo') dateTo?: string,
+    @Query('sortBy') sortBy?: 'date' | 'votes',
+  ): Promise<PaginatedMemeResponseDto> {
+    const tagNames = tags
+      ? tags
+          .split(/[,\s]+/)
+          .map((tag) => tag.trim())
+          .filter((tag) => tag.length > 0)
+      : [];
+    return this.memeService.searchMemesByTags(
+      tagNames,
+      page,
+      limit,
+      userId,
+      dateFrom ? new Date(dateFrom) : undefined,
+      dateTo ? new Date(dateTo) : undefined,
+      sortBy,
+    );
   }
 
   @Get(':id')

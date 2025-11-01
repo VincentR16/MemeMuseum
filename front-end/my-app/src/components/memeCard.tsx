@@ -1,72 +1,52 @@
 import {
   Card,
   Text,
-  Image,
   Group,
   Avatar,
   Badge,
   ActionIcon,
-  Paper,
   Flex,
   Center,
+  Box,
+  Divider,
 } from "@mantine/core";
 import { IconArrowLeft } from "@tabler/icons-react";
 import type { Meme } from "../types/Meme.type";
-import { useMediaQuery } from "@mantine/hooks";
 import { useNavigate } from "react-router-dom";
 import MemeButtons from "./memeButtons";
+import { getColorFromId } from "../utils/getColor";
+import { useState } from "react";
 
 interface MemeCardProps {
   isMemePage: boolean;
   meme: Meme;
 }
 
-const MANTINE_COLORS = [
-  "red",
-  "pink",
-  "grape",
-  "violet",
-  "indigo",
-  "blue",
-  "cyan",
-  "teal",
-  "lime",
-  "yellow",
-  "orange",
-  "green",
-];
-
-const getColorFromId = (id: string): string => {
-  const hash = id.split("").reduce((acc, char) => acc + char.charCodeAt(0), 0);
-  return MANTINE_COLORS[hash % MANTINE_COLORS.length];
-};
-
 export default function MemeCard({ meme, isMemePage = false }: MemeCardProps) {
-  const isMobile = useMediaQuery("(max-width: 767px)");
   const userVote = meme.votes?.[0]?.voteType;
+  const [isHovered, setIsHovered] = useState(false);
 
   const navigate = useNavigate();
 
   return (
     <Card
-      onClick={() => {
-        if (!isMemePage) {
-          navigate(`/home/archive/${meme.id}`);
-        }
-      }}
-      shadow="md"
+      bg={isHovered ? "dark.6" : "dark.7"}
       padding="xs"
+      onClick={() => {
+        if (!isMemePage) navigate(`/home/archive/${meme.id}`);
+      }}
       w={
         isMemePage
-          ? "100%"
+          ? { base: "100%", sm: "90%" }
           : { base: "100%", xs: "90%", sm: "85%", md: "80%", xl: "80%" }
       }
-      radius={isMobile || isMemePage ? 0 : "md"}
-      withBorder={isMemePage ? false : true}
       style={{
-        cursor: isMemePage ? "auto" : "pointer",
-        transition: "transform 0.2s ease, box-shadow 0.2s ease",
+        transition:
+          "transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease",
+        cursor: isMemePage ? "default" : "pointer",
       }}
+      onMouseEnter={() => !isMemePage && setIsHovered(true)}
+      onMouseLeave={() => !isMemePage && setIsHovered(false)}
     >
       <Group gap="xs" wrap="wrap" mb={"xs"}>
         {isMemePage && (
@@ -101,24 +81,57 @@ export default function MemeCard({ meme, isMemePage = false }: MemeCardProps) {
           </Text>
         </Center>
       </Group>
-      <Text fw={600} fs={{ base: "md", sm: "lg" }} lineClamp={1}>
+
+      <Box
+        mt="xs"
+        mb={"xs"}
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          height: "auto",
+          maxHeight: "700px",
+        }}
+      >
+        <img
+          src={meme.cloudinaryImageUrl}
+          alt={meme.title}
+          style={{
+            maxWidth: "100%",
+            maxHeight: "clamp(350px, 60vh, 700px)",
+            height: "auto",
+            objectFit: "contain",
+            borderRadius: "10px",
+          }}
+        />
+      </Box>
+
+      <Text
+        fw={700}
+        fz={{ base: "lg", xs: "xl", sm: "1.5rem", md: "1.75rem", lg: "2rem" }}
+        lineClamp={1}
+      >
         {meme.title}
       </Text>
-      <Text size="sm" c="dimmed" lineClamp={2} mb="xs">
+
+      <Text
+        fz={{ base: "xs", xs: "sm", sm: "md", md: "lg" }}
+        c="dimmed"
+        lineClamp={2}
+      >
         {meme.description}
       </Text>
-      <Card.Section>
-        <Paper p="xs" withBorder shadow="lg">
-          <Image
-            src={meme.cloudinaryImageUrl}
-            h={{ base: 300, xs: 350, sm: 400, md: 450, xl: 650 }}
-            fit="contain"
-            alt={meme.title}
-          />
-        </Paper>
-      </Card.Section>
 
-      <Flex direction={"row"} mt={"md"}>
+      <Divider mt="xs" w={"100%"}></Divider>
+
+      <Flex
+        direction={"row"}
+        mt={"md"}
+        ml={isMemePage ? 0 : "xs"}
+        justify={isMemePage ? "center" : "flex-start"}
+        wrap="nowrap"
+        gap="xs"
+      >
         <Group gap="xs" wrap="wrap">
           {meme.tags.map((tag) => (
             <Badge key={tag.id} color={getColorFromId(tag.id)} variant="light">
@@ -126,7 +139,11 @@ export default function MemeCard({ meme, isMemePage = false }: MemeCardProps) {
             </Badge>
           ))}
         </Group>
-        <MemeButtons memeId={meme.id} userVote={userVote}></MemeButtons>
+        <MemeButtons
+          isMemePage={isMemePage}
+          memeId={meme.id}
+          userVote={userVote}
+        />
       </Flex>
     </Card>
   );

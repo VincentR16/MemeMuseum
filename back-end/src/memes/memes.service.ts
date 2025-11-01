@@ -53,21 +53,30 @@ export class MemeService {
     return meme;
   }
 
-  async getMemes(
+  async searchMemesByTags(
+    tagNames: string[],
     page: number,
     limit: number,
     userId?: string,
+    dateFrom?: Date,
+    dateTo?: Date,
+    sortBy: 'date' | 'votes' = 'date',
   ): Promise<PaginatedMemeResponseDto> {
-    const skip = (page - 1) * limit;
+    const hasTagSearch = tagNames && tagNames.length > 0;
+    const hasDateSearch = dateFrom || dateTo;
 
+    if (!hasTagSearch && !hasDateSearch) {
+      throw new Error(
+        'Almeno un criterio di ricerca deve essere specificato: tag o intervallo di date',
+      );
+    }
+
+    const skip = (page - 1) * limit;
     const queryBuilder = this.memeRepository
       .createQueryBuilder('meme')
       .leftJoinAndSelect('meme.user', 'user')
       .leftJoinAndSelect('meme.comments', 'comments')
-      .leftJoinAndSelect('meme.tags', 'tags')
-      .skip(skip)
-      .take(limit)
-      .orderBy('meme.createdAt', 'DESC');
+      .leftJoinAndSelect('meme.tags', 'tags');
 
     if (userId) {
       queryBuilder.leftJoinAndSelect(
@@ -78,12 +87,86 @@ export class MemeService {
       );
     }
 
-    const [memes, totalItems] = await queryBuilder.getManyAndCount();
+    // AND logic: il meme deve avere TUTTI i tag
+    if (hasTagSearch) {
+      tagNames.forEach((tagName, index) => {
+        queryBuilder.innerJoin(
+          'meme.tags',
+          `tag${index}`,
+          `LOWER(tag${index}.name) = :tagName${index}`,
+          { [`tagName${index}`]: tagName.toLowerCase() },
+        );
+      });
+    }
+
+    if (dateFrom) {
+      queryBuilder.andWhere('meme.createdAt >= :dateFrom', { dateFrom });
+    }
+    if (dateTo) {
+      queryBuilder.andWhere('meme.createdAt <= :dateTo', { dateTo });
+    }
+
+    if (sortBy === 'votes') {
+      queryBuilder.orderBy('meme.votesCount', 'DESC');
+    } else {
+      queryBuilder.orderBy('meme.createdAt', 'DESC');
+    }
+
+    const [memes, totalItems] = await queryBuilder
+      .skip(skip)
+      .take(limit)
+      .getManyAndCount();
+
+    const totalPages = Math.ceil(totalItems / limit);
+    return {
+      memes,
+      pagination: {
+        currentPage: page,
+        totalPages,
+        hasNextPage: page < totalPages,
+        hasPreviousPage: page > 1,
+        itemsPerPage: limit,
+      },
+    };
+  }
+
+  async getMemes(
+    page: number,
+    limit: number,
+    userId?: string,
+    sortBy: 'date' | 'votes' = 'date',
+  ): Promise<PaginatedMemeResponseDto> {
+    const skip = (page - 1) * limit;
+
+    const queryBuilder = this.memeRepository
+      .createQueryBuilder('meme')
+      .leftJoinAndSelect('meme.user', 'user')
+      .leftJoinAndSelect('meme.comments', 'comments')
+      .leftJoinAndSelect('meme.tags', 'tags');
+
+    if (userId) {
+      queryBuilder.leftJoinAndSelect(
+        'meme.votes',
+        'userVote',
+        'userVote.userId = :userId',
+        { userId },
+      );
+    }
+
+    if (sortBy === 'votes') {
+      queryBuilder.orderBy('meme.votesCount', 'DESC');
+    } else {
+      queryBuilder.orderBy('meme.createdAt', 'DESC');
+    }
+
+    const [memes, totalItems] = await queryBuilder
+      .skip(skip)
+      .take(limit)
+      .getManyAndCount();
 
     const totalPages = Math.ceil(totalItems / limit);
     const hasNextPage = page < totalPages;
     const hasPreviousPage = page > 1;
-    console.log('meme vote', memes[0].votes, userId);
 
     return {
       memes,
