@@ -8,7 +8,7 @@ export async function getMemesApi(
 ): Promise<PaginatedMeme> {
   const params = new URLSearchParams({
     page: page.toString(),
-    limit: "10",
+    limit: "3",
     sortBy: sortBy,
   });
 

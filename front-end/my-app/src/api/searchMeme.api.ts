@@ -13,7 +13,7 @@ interface SearchMemesParams {
 
 export async function searchMemesApi({
   page,
-  limit = 10,
+  limit = 3,
   tags,
   userId,
   dateFrom,

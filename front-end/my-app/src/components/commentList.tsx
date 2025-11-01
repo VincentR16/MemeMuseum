@@ -17,6 +17,7 @@ export default function CommentList({ memeId }: { memeId: string }) {
 
   return (
     <Flex
+      data-testid="comment-list"
       w={{ base: "95%", xs: "90%", sm: "80%", md: "75%", lg: "70%", xl: "65%" }}
       direction={"column"}
       gap={"md"}
