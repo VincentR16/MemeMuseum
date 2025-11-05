@@ -141,6 +141,7 @@ export default function MemeCard({ meme, isMemePage = false }: MemeCardProps) {
           ))}
         </Group>
         <MemeButtons
+        memeVote={meme.votesCount}
           isMemePage={isMemePage}
           memeId={meme.id}
           userVote={userVote}

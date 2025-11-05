@@ -14,12 +14,14 @@ interface MemeButtonsProps {
   memeId: string;
   userVote: VoteType;
   isMemePage: boolean;
+  memeVote: number;
 }
 
 export default function MemeButtons({
   memeId,
   userVote,
   isMemePage,
+  memeVote,
 }: MemeButtonsProps) {
   const upvoteMutation = useUpvoteMeme();
   const downvoteMutation = useDownvoteMeme();
@@ -47,7 +49,9 @@ export default function MemeButtons({
               <IconArrowBigUp size={18} />
             )}
           </ActionIcon>
+
           <ActionIcon
+            mr={3}
             onClick={(e) => {
               e.stopPropagation();
               requireAuth(() => {
@@ -65,9 +69,10 @@ export default function MemeButtons({
               <IconArrowBigDown size={18} />
             )}
           </ActionIcon>
+          {memeVote >= 0 ? memeVote : 0}
           {!isMemePage && (
             <>
-              <Divider orientation="vertical"></Divider>
+              <Divider ml={"xs"} orientation="vertical"></Divider>
               <ActionIcon
                 ml={1}
                 radius="lg"
