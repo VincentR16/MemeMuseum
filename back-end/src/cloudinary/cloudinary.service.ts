@@ -1,6 +1,6 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { UploadApiErrorResponse, UploadApiResponse, v2 } from 'cloudinary';
-import { Readable } from 'stream'; // Import Node.js stream
+import { Readable } from 'stream';
 
 @Injectable()
 export class CloudinaryService {

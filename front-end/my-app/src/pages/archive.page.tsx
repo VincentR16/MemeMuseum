@@ -53,13 +53,6 @@ export default function ArchivePage() {
     if (searchTags.trim()) {
       params.tags = searchTags.trim();
     }
-    if (value[0]) {
-      params.dateFrom = value[0];
-    }
-    if (value[1]) {
-      params.dateTo = value[1];
-    }
-
     setSearchParams(params);
   };
 
@@ -86,13 +79,6 @@ export default function ArchivePage() {
   useEffect(() => {
     if (searchTags.trim() === "" && activeSearch) {
       const params: Record<string, string> = {};
-
-      if (value[0]) {
-        params.dateFrom = value[0];
-      }
-      if (value[1]) {
-        params.dateTo = value[1];
-      }
 
       setSearchParams(params);
     }
