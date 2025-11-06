@@ -50,8 +50,9 @@ export class MemesController {
   getMemeOfTheDay(
     @Query('page') page: number,
     @Query('limit') limit: number,
+    @Query('userId') userId?: string,
   ): Promise<PaginatedMemeResponseDto> {
-    return this.memeService.getMemeOftheday(page, limit);
+    return this.memeService.getMemeOftheday(page, limit, userId);
   }
 
   @Get()

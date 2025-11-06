@@ -18,7 +18,7 @@ export default function MemesOfTheDayPage() {
       gap={"lg"}
     >
       <div style={{ textAlign: "center", maxWidth: "90%" }}>
-        <Text fw="700" style={{ fontSize: "clamp(1rem, 4vw, 2rem)" }}>
+        <Text fw="700" style={{ fontSize: "clamp(0.5rem, 4vw, 2rem)" }}>
           The most searched words of the day are:
         </Text>
       </div>
@@ -27,13 +27,13 @@ export default function MemesOfTheDayPage() {
           text={data?.join(", ") || ""}
           animateOn="view"
           revealDirection="center"
-          speed={250}
+          speed={150}
           maxIterations={20}
           className="revealed"
           parentClassName="all-letters"
           encryptedClassName="encrypted"
           style={{
-            fontSize: "clamp(1.5rem, 6vw, 2.5rem)",
+            fontSize: "clamp(1.5rem, 2vw, 2.5rem)",
             fontWeight: "bold",
             wordWrap: "break-word",
           }}

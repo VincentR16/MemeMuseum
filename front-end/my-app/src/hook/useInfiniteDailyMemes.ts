@@ -4,7 +4,7 @@ import { getDailyMemesApi } from "../api/getDailyMemes.api";
 
 export default function useInfiniteDayliMemes() {
   const { user } = useAuthContext();
-
+  
   return useInfiniteQuery({
     queryKey: ["daily", user?.id],
     queryFn: ({ pageParam }) => {

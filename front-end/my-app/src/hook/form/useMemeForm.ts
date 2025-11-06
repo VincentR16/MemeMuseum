@@ -37,11 +37,11 @@ export function useMemeForm() {
 
         const invalidTags = value.filter(
           (tag) =>
-            tag.length < 2 || tag.length > 20 || !/^[a-zA-Z0-9-_]+$/.test(tag)
+            tag.length < 2 || tag.length > 40 || !/^[a-zA-Z0-9-_]+$/.test(tag)
         );
 
         if (invalidTags.length > 0) {
-          return "Tags must be 2-20 characters and contain only letters, numbers, - and __";
+          return "Tags must be 2-40 characters and contain only letters, numbers, - and __";
         }
 
         return null;

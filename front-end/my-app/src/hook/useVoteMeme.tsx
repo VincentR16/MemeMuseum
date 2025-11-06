@@ -10,6 +10,8 @@ function useVoteMutation(voteFn: (memeId: string) => Promise<Vote>) {
     mutationFn: voteFn,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["meme"] });
+      queryClient.invalidateQueries({ queryKey: ["daily"] });
+
     },
     onError: (error: Error) => {
       console.error("Vote error:", error);

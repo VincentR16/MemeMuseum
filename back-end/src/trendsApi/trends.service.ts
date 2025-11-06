@@ -37,7 +37,7 @@ export class TrendingService {
 
   @Cron('0 */12 * * *')
   async updateDailyTrending(): Promise<void> {
-    console.log('Updating daily trending keywords...');
+    //console.log('Updating daily trending keywords...');
 
     try {
       const apiKey = this.configService.get<string>('SERPAPI_KEY');
@@ -62,11 +62,11 @@ export class TrendingService {
 
         this.lastUpdate = new Date();
 
-        console.log(
+        /*console.log(
           '✅ Trending keywords updated:',
           this.dailyTrendingKeywords,
         );
-        console.log('Last update:', this.lastUpdate);
+        console.log('Last update:', this.lastUpdate);*/
       } else {
         console.log('⚠️ No trending searches found');
       }
@@ -76,7 +76,7 @@ export class TrendingService {
   }
 
   async onModuleInit(): Promise<void> {
-    console.log('TrendingService initialized. Fetching initial data...');
+    //console.log('TrendingService initialized. Fetching initial data...');
     await this.updateDailyTrending();
   }
 
