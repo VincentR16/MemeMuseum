@@ -1,4 +1,4 @@
-# 🎭 MemeMuseum
+#  MemeMuseum
 
 **MemeMuseum** is a full-stack web application that combines entertainment and data-driven content discovery.  
 It allows users to browse, upload, and interact with memes while automatically showcasing trending content based on real-world popularity data from **Google Trends** via **SerpApi**.  
